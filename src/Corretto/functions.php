@@ -54,13 +54,24 @@ class Description {
 	}
 
 	public function run() {
+		AllTests::setCurrentDescription( $this );
 		( $this->callable )();
+		AllTests::echoIndent();
+		echo $this->name . "\n";
+		AllTests::incrementDescriptionLevel();
 		$this->runTests();
+		$this->runDescriptions();
+		AllTests::decrementDescriptionLevel();
+	}
+
+	public function runDescriptions() {
+		$runDescription = function( Description $description ) {
+			$description->run();
+		};
+		array_map( $runDescription, $this->descriptions );
 	}
 
 	public function runTests() {
-		echo $this->name . "\n";
-		AllTests::incrementDescriptionLevel();
 		$runTest = function( Test $test ) {
 			AllTests::runTest( $test );
 		};
@@ -99,24 +110,32 @@ class AllTests {
 		return self::$descriptions;
 	}
 
+	public static function setCurrentDescription( Description $description ) {
+		self::$currentDescription = $description;
+	}
+
 	public static function run() {
 		array_map( [ __CLASS__, 'runDescription' ], self::getDescriptions() );
 	}
 
 	public static function runDescription( Description $description ) {
-		self::$currentDescription = $description;
 		$description->run();
 	}
 
 	public static function runTest( Test $test ) {
+		self::echoIndent();
+		$test->run();
+	}
+
+	public static function echoIndent() {
 		$indentLevel = self::$currentDescriptionLevel;
 		while( $indentLevel > 0 ) {
 			echo '  ';
 			$indentLevel --;
 		}
-		$test->run();
 	}
 }
 
 require( './tests/assertions.php' );
+require( './tests/describe.php' );
 AllTests::run();
