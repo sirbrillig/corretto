@@ -1,0 +1,23 @@
+{
+    "name": "sirbrillig/corretto",
+    "description": "A PHP test runner that makes sense",
+    "type": "library",
+    "keywords": ["phpunit", "testing"],
+    "homepage": "https://github.com/sirbrillig/corretto",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-0": {
+            "Corretto": "src/"
+        },
+        "files": [ "src/Corretto/functions.php" ]
+    },
+    "authors": [
+        {
+            "name": "Payton Swick",
+            "email": "payton@foolord.com"
+        }
+    ]
+}
