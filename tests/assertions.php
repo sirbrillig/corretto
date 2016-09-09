@@ -1,13 +1,13 @@
 <?php
 
-use function \Corretto\{describe, assert};
+use function \Corretto\{describe, it, assert};
 
-describe( 'assert', function( $it ) {
-	$it( 'passes if its argument is true', function() {
+describe( 'assert', function() {
+	it( 'passes if its argument is true', function() {
 		assert( true );
 	} );
 
-	$it( 'fails if its argument is false', function() {
+	it( 'fails if its argument is false', function() {
 		try {
 			assert( false );
 		} catch ( Exception $e ) {
@@ -16,7 +16,7 @@ describe( 'assert', function( $it ) {
 		throw new Exception( 'assert(false) did not fail' );
 	} );
 
-	$it( 'fails with an expected string if its argument is false', function() {
+	it( 'fails with an expected string if its argument is false', function() {
 		try {
 			assert( false );
 		} catch ( Exception $e ) {
