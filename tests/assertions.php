@@ -1,13 +1,15 @@
 <?php
 
-\Corretto\describe( 'assert', function( $it ) {
+use function \Corretto\{describe, assert};
+
+describe( 'assert', function( $it ) {
 	$it( 'passes if its argument is true', function() {
-		\Corretto\assert( true );
+		assert( true );
 	} );
 
 	$it( 'fails if its argument is false', function() {
 		try {
-			\Corretto\assert( false );
+			assert( false );
 		} catch ( Exception $e ) {
 			return;
 		}
@@ -16,7 +18,7 @@
 
 	$it( 'fails with an expected string if its argument is false', function() {
 		try {
-			\Corretto\assert( false );
+			assert( false );
 		} catch ( Exception $e ) {
 			$expected = "Failed asserting that '' is true";
 			if ( $e->getMessage() === $expected ) {
