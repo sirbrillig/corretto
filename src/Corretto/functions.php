@@ -27,10 +27,13 @@ class Test {
 		try {
 			( $this->callable )();
 		} catch ( \Exception $e ) {
-			echo "'$this->name' failed: ", $e->getMessage(), "\n";
+			AllTests::addFailure( $this, $e );
+			echo " X ";
+			echo "$this->name\n";
 			return;
 		}
-		echo "'$this->name' passed.\n";
+		echo " √ ";
+		echo "$this->name\n";
 	}
 }
 
@@ -79,8 +82,20 @@ class Description {
 	}
 }
 
+class Failure {
+	public $test;
+	public $exception;
+
+	public function __construct( Test $test, \Exception $exception ) {
+		$this->test = $test;
+		$this->exception = $exception;
+	}
+}
+
 class AllTests {
+	private static $testCount = 0;
 	private static $descriptions = [];
+	private static $failures = [];
 	private static $currentDescription = null;
 	private static $currentDescriptionLevel = 0;
 
@@ -90,6 +105,22 @@ class AllTests {
 
 	public static function decrementDescriptionLevel() {
 		self::$currentDescriptionLevel --;
+	}
+
+	public static function addFailure( Test $test, \Exception $e ) {
+		self::$failures[] = new Failure( $test, $e );
+	}
+
+	public static function getFailures() {
+		return self::$failures;
+	}
+
+	public static function echoFailures() {
+		array_map( [ __CLASS__, 'echoFailure' ], self::getFailures() );
+	}
+
+	public static function echoFailure( Failure $failure ) {
+		echo "'" . $failure->test->name . "' failed: ", $failure->exception->getMessage(), "\n";
 	}
 
 	public static function addTest( Test $test ) {
@@ -116,6 +147,15 @@ class AllTests {
 
 	public static function run() {
 		array_map( [ __CLASS__, 'runDescription' ], self::getDescriptions() );
+		echo "\n";
+		$testCount = self::$testCount;
+		$failureCount = count( self::getFailures() );
+		if ( $failureCount < 1 ) {
+			echo "$testCount tests passed\n";
+			return;
+		}
+		echo "$failureCount of $testCount tests failed:\n\n";
+		self::echoFailures();
 	}
 
 	public static function runDescription( Description $description ) {
@@ -123,6 +163,7 @@ class AllTests {
 	}
 
 	public static function runTest( Test $test ) {
+		self::$testCount ++;
 		self::echoIndent();
 		$test->run();
 	}
