@@ -1,0 +1,16 @@
+#!/usr/bin/env php -q
+<?php
+
+require( './vendor/autoload.php' );
+
+array_shift( $argv );
+if ( count( $argv ) < 1 ) {
+	echo "USAGE: corretto [test_file1.php]...\n";
+	die;
+}
+$loadFile = function( $fileName ) {
+	require( $fileName );
+};
+array_map( $loadFile, $argv );
+
+\Corretto\AllTests::run();
