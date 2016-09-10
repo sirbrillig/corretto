@@ -10,5 +10,14 @@ class Failure {
 		$this->exception = $exception;
 		$this->descriptions = $descriptions;
 	}
+
+	public function __toString() {
+		$getName = function( $description ) {
+			return $description->name;
+		};
+		$str = implode( ' ', array_map( $getName, $this->descriptions ) );
+		$str .= ' ' . $this->test->name . ' failed: ' . $this->exception->getMessage();
+		return $str;
+	}
 }
 

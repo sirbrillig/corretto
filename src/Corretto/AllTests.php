@@ -29,11 +29,7 @@ class AllTests {
 	}
 
 	public static function echoFailure( Failure $failure ) {
-		$getName = function( $description ) {
-			return $description->name;
-		};
-		echo implode( ' ', array_map( $getName, $failure->descriptions ) );
-		echo ' ' . $failure->test->name . ' failed: ', $failure->exception->getMessage(), "\n";
+		echo $failure . "\n";
 	}
 
 	public static function addTest( Test $test ) {
