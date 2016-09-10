@@ -17,7 +17,7 @@ class AllTests {
 	}
 
 	public static function addFailure( Test $test, \Exception $e ) {
-		self::$failures[] = new Failure( $test, $e );
+		self::$failures[] = new Failure( $test, $e, self::$currentDescriptions );
 	}
 
 	public static function getFailures() {
@@ -29,7 +29,11 @@ class AllTests {
 	}
 
 	public static function echoFailure( Failure $failure ) {
-		echo "'" . $failure->test->name . "' failed: ", $failure->exception->getMessage(), "\n";
+		$getName = function( $description ) {
+			return $description->name;
+		};
+		echo implode( ' ', array_map( $getName, $failure->descriptions ) );
+		echo ' ' . $failure->test->name . ' failed: ', $failure->exception->getMessage(), "\n";
 	}
 
 	public static function addTest( Test $test ) {
