@@ -29,6 +29,7 @@ class Description {
 		$this->runTests();
 		$this->runDescriptions();
 		AllTests::decrementDescriptionLevel();
+		AllTests::endCurrentDescription();
 	}
 
 	public function runDescriptions() {

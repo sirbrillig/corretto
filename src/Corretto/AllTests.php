@@ -5,7 +5,7 @@ class AllTests {
 	private static $testCount = 0;
 	private static $descriptions = [];
 	private static $failures = [];
-	private static $currentDescription = null;
+	private static $currentDescriptions = [];
 	private static $currentDescriptionLevel = 0;
 
 	public static function incrementDescriptionLevel() {
@@ -33,15 +33,17 @@ class AllTests {
 	}
 
 	public static function addTest( Test $test ) {
-		if ( ! self::$currentDescription ) {
+		$currentDescription = self::getCurrentDescription();
+		if ( ! $currentDescription ) {
 			throw new \Exception( 'calls to `it` must be inside a `describe` block' );
 		}
-		self::$currentDescription->addTest( $test );
+		$currentDescription->addTest( $test );
 	}
 
 	public static function addDescription( Description $description ) {
-		if ( self::$currentDescription ) {
-			return self::$currentDescription->addDescription( $description );
+		$currentDescription = self::getCurrentDescription();
+		if ( $currentDescription ) {
+			return $currentDescription->addDescription( $description );
 		}
 		self::$descriptions[] = $description;
 	}
@@ -51,7 +53,15 @@ class AllTests {
 	}
 
 	public static function setCurrentDescription( Description $description ) {
-		self::$currentDescription = $description;
+		self::$currentDescriptions[] = $description;
+	}
+
+	public static function endCurrentDescription() {
+		array_pop( self::$currentDescriptions );
+	}
+
+	public static function getCurrentDescription() {
+		return end( self::$currentDescriptions );
 	}
 
 	public static function run() {
