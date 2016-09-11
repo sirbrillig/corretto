@@ -33,6 +33,7 @@ class Spec extends Base {
 	public function fail( $test ) {
 		$this->testCount ++;
 		$this->failedTests[] = $test;
+		$this->echoIndent();
 		echo ' X ' . $test->getName() . "\n";
 	}
 
