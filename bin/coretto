@@ -12,7 +12,7 @@ $loadFile = function( $fileName ) {
 	require( $fileName );
 };
 
-$root = new \Corretto\AllTests();
+$root = new \Corretto\RootSuite();
 \Corretto\setRootSuite( $root );
 array_map( $loadFile, $argv );
 $root->run();

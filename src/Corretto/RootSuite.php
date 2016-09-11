@@ -1,7 +1,7 @@
 <?php
 namespace Corretto;
 
-class AllTests {
+class RootSuite {
 	private $testCount = 0;
 	private $suites = [];
 	private $failures = [];
