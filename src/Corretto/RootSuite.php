@@ -1,11 +1,14 @@
 <?php
 namespace Corretto;
 
-class RootSuite {
+class RootSuite extends Suite {
 	private $testCount = 0;
 	private $suites = [];
 	private $failures = [];
 	private $currentSuites = [];
+
+	public function __construct() {
+	}
 
 	public function getCurrentSuiteLevel() {
 		return count ( $this->currentSuites );
@@ -48,6 +51,10 @@ class RootSuite {
 	}
 
 	public function getName() {
+		return '';
+	}
+
+	public function getFullName() {
 		return '';
 	}
 

@@ -26,7 +26,11 @@ class Suite {
 	}
 
 	public function getName() {
-		return $this->parent ? $this->parent->getName() . ' ' . $this->name : $this->name;
+		return $this->name;
+	}
+
+	public function getFullName() {
+		return $this->parent ? $this->parent->getFullName() . ' ' . $this->name : $this->name;
 	}
 
 	public function on( string $key, callable $handler ) {

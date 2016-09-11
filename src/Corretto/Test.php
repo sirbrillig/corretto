@@ -12,8 +12,12 @@ class Test {
 		$this->callable = $callable;
 	}
 
+	public function getFullName() {
+		return $this->parent ? $this->parent->getFullName() . ' ' . $this->name : $this->name;
+	}
+
 	public function getName() {
-		return $this->parent ? $this->parent->getName() . ' ' . $this->name : $this->name;
+		return $this->name;
 	}
 
 	public function run() {

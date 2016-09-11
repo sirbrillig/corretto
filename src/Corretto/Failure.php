@@ -11,7 +11,7 @@ class Failure {
 	}
 
 	public function __toString() {
-		$str = $this->test->getName() . ' failed: ' . $this->exception->getMessage();
+		$str = $this->test->getFullName() . ': ' . $this->exception->getMessage();
 		return $str;
 	}
 }
