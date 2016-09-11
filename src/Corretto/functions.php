@@ -1,14 +1,23 @@
 <?php
 namespace Corretto;
 
+$rootDescription;
+
+function setRootDescription( $description ) {
+	global $rootDescription;
+	$rootDescription = $description;
+}
+
 function describe( string $name, callable $callable ) {
+	global $rootDescription;
 	$desc = new Description( $name, $callable );
-	AllTests::addDescription( $desc );
+	$rootDescription->addDescription( $desc );
 }
 
 function it( string $name, callable $callable ) {
+	global $rootDescription;
 	$test = new Test( $name, $callable );
-	AllTests::addTest( $test );
+	$rootDescription->addTest( $test );
 }
 
 function assert( $expression = false ) {

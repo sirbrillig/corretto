@@ -2,98 +2,96 @@
 namespace Corretto;
 
 class AllTests {
-	private static $testCount = 0;
-	private static $descriptions = [];
-	private static $failures = [];
-	private static $currentDescriptions = [];
-	private static $currentDescriptionLevel = 0;
+	private $testCount = 0;
+	private $descriptions = [];
+	private $failures = [];
+	private $currentDescriptions = [];
+	private $currentDescriptionLevel = 0;
 
-	public static function incrementDescriptionLevel() {
-		self::$currentDescriptionLevel ++;
+	public function incrementDescriptionLevel() {
+		$this->currentDescriptionLevel ++;
 	}
 
-	public static function decrementDescriptionLevel() {
-		self::$currentDescriptionLevel --;
+	public function decrementDescriptionLevel() {
+		$this->currentDescriptionLevel --;
 	}
 
-	public static function addFailure( Test $test, \Exception $e ) {
-		self::$failures[] = new Failure( $test, $e, self::$currentDescriptions );
+	public function addFailure( Test $test, \Exception $e ) {
+		$this->failures[] = new Failure( $test, $e, $this->currentDescriptions );
 	}
 
-	public static function getFailures() {
-		return self::$failures;
+	public function getFailures() {
+		return $this->failures;
 	}
 
-	public static function echoFailures() {
-		array_map( [ __CLASS__, 'echoFailure' ], self::getFailures() );
+	public function echoFailures() {
+		array_map( [ $this, 'echoFailure' ], $this->getFailures() );
 	}
 
-	public static function echoFailure( Failure $failure ) {
+	public function echoFailure( Failure $failure ) {
 		echo $failure . "\n";
 	}
 
-	public static function addTest( Test $test ) {
-		$currentDescription = self::getCurrentDescription();
+	public function addTest( Test $test ) {
+		$currentDescription = $this->getCurrentDescription();
 		if ( ! $currentDescription ) {
 			throw new \Exception( 'calls to `it` must be inside a `describe` block' );
 		}
 		$currentDescription->addTest( $test );
 	}
 
-	public static function addDescription( Description $description ) {
-		$description->on( 'startDescription', [ __CLASS__, 'setCurrentDescription' ] );
-		$description->on( 'endDescription', [ __CLASS__, 'endCurrentDescription' ] );
-		$currentDescription = self::getCurrentDescription();
+	public function addDescription( Description $description ) {
+		$description->on( 'startDescription', [ $this, 'setCurrentDescription' ] );
+		$description->on( 'endDescription', [ $this, 'endCurrentDescription' ] );
+		$currentDescription = $this->getCurrentDescription();
 		if ( $currentDescription ) {
 			$currentDescription->addDescription( $description );
 			return;
 		}
-		self::$descriptions[] = $description;
+		$this->descriptions[] = $description;
 	}
 
-	public static function getDescriptions() {
-		return self::$descriptions;
+	public function getDescriptions() {
+		return $this->descriptions;
 	}
 
-	public static function setCurrentDescription( Description $description ) {
-		self::$currentDescriptions[] = $description;
+	public function setCurrentDescription( Description $description ) {
+		$this->currentDescriptions[] = $description;
 	}
 
-	public static function endCurrentDescription() {
-		array_pop( self::$currentDescriptions );
+	public function endCurrentDescription() {
+		array_pop( $this->currentDescriptions );
 	}
 
-	public static function getCurrentDescription() {
-		return end( self::$currentDescriptions );
+	public function getCurrentDescription() {
+		return end( $this->currentDescriptions );
 	}
 
-	public static function run() {
-		array_map( [ __CLASS__, 'runDescription' ], self::getDescriptions() );
+	public function run() {
+		array_map( [ $this, 'runDescription' ], $this->getDescriptions() );
 		echo "\n";
-		$testCount = self::$testCount;
-		$failureCount = count( self::getFailures() );
+		$testCount = $this->testCount;
+		$failureCount = count( $this->getFailures() );
 		if ( $failureCount < 1 ) {
 			echo "$testCount tests passed\n";
 			return;
 		}
 		echo "$failureCount of $testCount tests failed:\n\n";
-		self::echoFailures();
+		$this->echoFailures();
 	}
 
-	public static function runDescription( Description $description ) {
-		$description->doForAllTests( function( $test ) {
-			AllTests::runTest( $test );
-		} );
+	public function runDescription( Description $description ) {
+		$description->doForAllTests( [ $this, 'runTest' ] );
 	}
 
-	public static function runTest( Test $test ) {
-		self::$testCount ++;
-		self::echoIndent();
+	public function runTest( Test $test ) {
+		$this->testCount ++;
+		$this->echoIndent();
 		$test->run();
 	}
 
-	public static function echoIndent() {
-		$indentLevel = self::$currentDescriptionLevel;
+	public function echoIndent() {
+		$indentLevel = $this->currentDescriptionLevel;
 		while( $indentLevel > 0 ) {
 			echo '  ';
 			$indentLevel --;

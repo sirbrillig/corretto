@@ -11,6 +11,8 @@ if ( count( $argv ) < 1 ) {
 $loadFile = function( $fileName ) {
 	require( $fileName );
 };
-array_map( $loadFile, $argv );
 
-\Corretto\AllTests::run();
+$root = new \Corretto\AllTests();
+\Corretto\setRootDescription( $root );
+array_map( $loadFile, $argv );
+$root->run();
