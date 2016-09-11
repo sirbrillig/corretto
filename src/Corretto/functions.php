@@ -20,6 +20,6 @@ function it( string $name, callable $callable ) {
 
 function assert( $expression = false ) {
 	if ( ! $expression ) {
-		throw new \Exception( "Failed asserting that '" . strval( $expression ) . "' is true" );
+		throw new \Exception( "Failed asserting that '" . var_export( $expression, true ) . "' is true" );
 	}
 }

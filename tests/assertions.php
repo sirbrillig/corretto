@@ -20,7 +20,7 @@ describe( 'assert', function() {
 		try {
 			assert( false );
 		} catch ( Exception $e ) {
-			$expected = "Failed asserting that '' is true";
+			$expected = "Failed asserting that 'false' is true";
 			if ( $e->getMessage() === $expected ) {
 				return;
 			}
