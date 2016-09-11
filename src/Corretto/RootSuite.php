@@ -1,12 +1,9 @@
 <?php
 namespace Corretto;
 
-class RootSuite extends Suite {
+class RootSuite extends Emitter {
 	private $suites = [];
 	private $currentSuites = [];
-
-	public function __construct() {
-	}
 
 	public function addTest( Test $test ) {
 		$currentSuite = $this->getCurrentSuite();
@@ -17,45 +14,32 @@ class RootSuite extends Suite {
 	}
 
 	public function addSuite( Suite $suite ) {
-		$suite->on( 'startSuite', [ $this, 'setCurrentSuite' ] );
-		$suite->on( 'endSuite', [ $this, 'endCurrentSuite' ] );
+		$suite->on( 'suite-start', [ $this, 'setCurrentSuite' ] );
+		$suite->on( 'suite-end', [ $this, 'endCurrentSuite' ] );
 		$currentSuite = $this->getCurrentSuite();
 		if ( $currentSuite ) {
 			$currentSuite->addSuite( $suite );
 			return;
 		}
-		$suite->parent = $this;
 		$this->suites[] = $suite;
 	}
 
-	public function getName() {
-		return '';
-	}
-
-	public function getFullName() {
-		return '';
-	}
-
-	public function getSuites() {
-		return $this->suites;
-	}
-
-	public function setCurrentSuite( Suite $suite ) {
+	protected function setCurrentSuite( Suite $suite ) {
 		$this->emit( 'suite-start', $suite );
 		$this->currentSuites[] = $suite;
 	}
 
-	public function endCurrentSuite() {
+	protected function endCurrentSuite() {
 		$this->emit( 'suite-end', $this->getCurrentSuite() );
 		array_pop( $this->currentSuites );
 	}
 
-	public function getCurrentSuite() {
+	protected function getCurrentSuite() {
 		return end( $this->currentSuites );
 	}
 
 	public function run() {
-		array_map( [ $this, 'runSuite' ], $this->getSuites() );
+		array_map( [ $this, 'runSuite' ], $this->suites );
 		$this->emit( 'tests-end' );
 	}
 

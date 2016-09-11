@@ -1,12 +1,11 @@
 <?php
 namespace Corretto;
 
-class Suite {
+class Suite extends Emitter {
 	private $suites = [];
 	private $tests = [];
 	private $callable = null;
 	private $name = '';
-	private $handlers = [];
 
 	public $parent;
 
@@ -34,30 +33,15 @@ class Suite {
 		return $this->parent ? $this->parent->getFullName() . ' ' . $this->name : $this->name;
 	}
 
-	public function on( string $key, callable $handler ) {
-		if ( ! isset( $this->handlers[ $key ] ) ) {
-			$this->handlers[ $key ] = [];
-		}
-		$this->handlers[ $key ][] = $handler;
-	}
-
-	protected function emit( string $key, $data = null ) {
-		if ( isset( $this->handlers[ $key ] ) ) {
-			array_map( function( $handler ) use ( $data ) {
-				$handler( $data );
-			}, $this->handlers[ $key ] );
-		}
-	}
-
 	public function doForAllTests( callable $action ) {
-		$this->emit( 'startSuite', $this );
+		$this->emit( 'suite-start', $this );
 		( $this->callable )();
 		array_map( $action, $this->tests );
 		$runSuite = function( Suite $suite ) use ( $action ) {
 			$suite->doForAllTests( $action );
 		};
 		array_map( $runSuite, $this->suites );
-		$this->emit( 'endSuite', $this );
+		$this->emit( 'suite-end', $this );
 	}
 }
 
