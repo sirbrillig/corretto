@@ -44,6 +44,10 @@ class Description {
 		}
 	}
 
+	public function addFailure( Failure $failure ) {
+		$this->parent && $this->parent->addFailure( $failure );
+	}
+
 	public function doForAllTests( callable $action ) {
 		$this->emit( 'startDescription', $this );
 		( $this->callable )();

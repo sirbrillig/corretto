@@ -11,8 +11,8 @@ class AllTests {
 		return count ( $this->currentDescriptions );
 	}
 
-	public function addFailure( Test $test, \Exception $e ) {
-		$this->failures[] = new Failure( $test, $e, $this->currentDescriptions );
+	public function addFailure( Failure $failure ) {
+		$this->failures[] = $failure;
 	}
 
 	public function getFailures() {
@@ -43,7 +43,12 @@ class AllTests {
 			$currentDescription->addDescription( $description );
 			return;
 		}
+		$description->parent = $this;
 		$this->descriptions[] = $description;
+	}
+
+	public function getName() {
+		return '';
 	}
 
 	public function getDescriptions() {
