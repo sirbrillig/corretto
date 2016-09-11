@@ -12,8 +12,8 @@ $loadFile = function( $fileName ) {
 	require( $fileName );
 };
 
-$root = new \Corretto\RootSuite();
-\Corretto\setRootSuite( $root );
+$root = new \Corretto\Runner();
+\Corretto\setRunner( $root );
 array_map( $loadFile, $argv );
 new \Corretto\Reporters\Spec( $root );
 $root->run();

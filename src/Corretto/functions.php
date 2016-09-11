@@ -1,23 +1,21 @@
 <?php
 namespace Corretto;
 
-$rootSuite;
-
-function setRootSuite( $suite ) {
-	global $rootSuite;
-	$rootSuite = $suite;
+function setRunner( $suite ) {
+	global $runner;
+	$runner = $suite;
 }
 
 function describe( string $name, callable $callable ) {
-	global $rootSuite;
+	global $runner;
 	$desc = new Suite( $name, $callable );
-	$rootSuite->addSuite( $desc );
+	$runner->addSuite( $desc );
 }
 
 function it( string $name, callable $callable ) {
-	global $rootSuite;
+	global $runner;
 	$test = new Test( $name, $callable );
-	$rootSuite->addTest( $test );
+	$runner->addTest( $test );
 }
 
 function assert( $expression = false ) {

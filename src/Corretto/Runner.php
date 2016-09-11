@@ -1,7 +1,7 @@
 <?php
 namespace Corretto;
 
-class RootSuite extends Emitter {
+class Runner extends Emitter {
 	private $suites = [];
 	private $currentSuites = [];
 
