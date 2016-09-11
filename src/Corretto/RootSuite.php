@@ -2,9 +2,7 @@
 namespace Corretto;
 
 class RootSuite extends Suite {
-	private $testCount = 0;
 	private $suites = [];
-	private $failures = [];
 	private $currentSuites = [];
 
 	public function __construct() {
@@ -12,22 +10,6 @@ class RootSuite extends Suite {
 
 	public function getCurrentSuiteLevel() {
 		return count ( $this->currentSuites );
-	}
-
-	public function addFailure( Failure $failure ) {
-		$this->failures[] = $failure;
-	}
-
-	public function getFailures() {
-		return $this->failures;
-	}
-
-	public function echoFailures() {
-		array_map( [ $this, 'echoFailure' ], $this->getFailures() );
-	}
-
-	public function echoFailure( Failure $failure ) {
-		echo $failure . "\n";
 	}
 
 	public function addTest( Test $test ) {
@@ -63,13 +45,12 @@ class RootSuite extends Suite {
 	}
 
 	public function setCurrentSuite( Suite $suite ) {
-		// TODO: move this echo to a reporter
-		$this->echoIndent();
-		echo $suite->getName() . "\n";
+		$this->emit( 'suite-start', $suite );
 		$this->currentSuites[] = $suite;
 	}
 
 	public function endCurrentSuite() {
+		$this->emit( 'suite-end', $this->getCurrentSuite() );
 		array_pop( $this->currentSuites );
 	}
 
@@ -79,15 +60,7 @@ class RootSuite extends Suite {
 
 	public function run() {
 		array_map( [ $this, 'runSuite' ], $this->getSuites() );
-		echo "\n";
-		$testCount = $this->testCount;
-		$failureCount = count( $this->getFailures() );
-		if ( $failureCount < 1 ) {
-			echo "$testCount tests passed\n";
-			return;
-		}
-		echo "$failureCount of $testCount tests failed:\n\n";
-		$this->echoFailures();
+		$this->emit( 'tests-end' );
 	}
 
 	public function runSuite( Suite $suite ) {
@@ -95,11 +68,17 @@ class RootSuite extends Suite {
 	}
 
 	public function runTest( Test $test ) {
-		$this->testCount ++;
-		$this->echoIndent();
-		$test->run();
+		try {
+			( $test->getTest() )();
+		} catch ( \Exception $e ) {
+			$test->setException( $e );
+			$this->emit( 'test-failure', $test );
+			return;
+		}
+		$this->emit( 'test-success', $test );
 	}
 
+	// TODO: move to reporter
 	public function echoIndent() {
 		$indentLevel = $this->getCurrentSuiteLevel();
 		while( $indentLevel > 0 ) {

@@ -4,6 +4,7 @@ namespace Corretto;
 class Test {
 	private $name;
 	private $callable;
+	private $exception;
 
 	public $parent;
 
@@ -20,20 +21,16 @@ class Test {
 		return $this->name;
 	}
 
-	public function run() {
-		try {
-			( $this->callable )();
-		} catch ( \Exception $e ) {
-			$failure = new Failure( $this, $e );
-			$this->parent && $this->parent->addFailure( $failure );
-			// TODO: move this output to a reporter
-			echo ' X ';
-			echo "$this->name\n";
-			return;
-		}
-		// TODO: move this output to a reporter
-		echo ' √ ';
-		echo "$this->name\n";
+	public function getTest() {
+		return $this->callable;
+	}
+
+	public function setException( \Exception $e ) {
+		$this->exception = $e;
+	}
+
+	public function getException() {
+		return $this->exception;
 	}
 }
 

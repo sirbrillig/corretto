@@ -40,7 +40,7 @@ class Suite {
 		$this->handlers[ $key ][] = $handler;
 	}
 
-	protected function emit( string $key, $data ) {
+	protected function emit( string $key, $data = null ) {
 		if ( isset( $this->handlers[ $key ] ) ) {
 			array_map( function( $handler ) use ( $data ) {
 				$handler( $data );
