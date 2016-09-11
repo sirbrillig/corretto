@@ -41,9 +41,12 @@ class AllTests {
 	}
 
 	public static function addDescription( Description $description ) {
+		$description->on( 'startDescription', [ __CLASS__, 'setCurrentDescription' ] );
+		$description->on( 'endDescription', [ __CLASS__, 'endCurrentDescription' ] );
 		$currentDescription = self::getCurrentDescription();
 		if ( $currentDescription ) {
-			return $currentDescription->addDescription( $description );
+			$currentDescription->addDescription( $description );
+			return;
 		}
 		self::$descriptions[] = $description;
 	}
@@ -78,7 +81,9 @@ class AllTests {
 	}
 
 	public static function runDescription( Description $description ) {
-		$description->run();
+		$description->doForAllTests( function( $test ) {
+			AllTests::runTest( $test );
+		} );
 	}
 
 	public static function runTest( Test $test ) {
