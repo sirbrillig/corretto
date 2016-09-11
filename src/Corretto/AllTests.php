@@ -6,14 +6,9 @@ class AllTests {
 	private $descriptions = [];
 	private $failures = [];
 	private $currentDescriptions = [];
-	private $currentDescriptionLevel = 0;
 
-	public function incrementDescriptionLevel() {
-		$this->currentDescriptionLevel ++;
-	}
-
-	public function decrementDescriptionLevel() {
-		$this->currentDescriptionLevel --;
+	public function getCurrentDescriptionLevel() {
+		return count ( $this->currentDescriptions );
 	}
 
 	public function addFailure( Test $test, \Exception $e ) {
@@ -56,6 +51,9 @@ class AllTests {
 	}
 
 	public function setCurrentDescription( Description $description ) {
+		// TODO: move this echo to a reporter
+		$this->echoIndent();
+		echo $description->getName() . "\n";
 		$this->currentDescriptions[] = $description;
 	}
 
@@ -91,7 +89,7 @@ class AllTests {
 	}
 
 	public function echoIndent() {
-		$indentLevel = $this->currentDescriptionLevel;
+		$indentLevel = $this->getCurrentDescriptionLevel();
 		while( $indentLevel > 0 ) {
 			echo '  ';
 			$indentLevel --;

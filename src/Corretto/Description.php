@@ -47,8 +47,6 @@ class Description {
 	public function doForAllTests( callable $action ) {
 		$this->emit( 'startDescription', $this );
 		( $this->callable )();
-		// TODO: move this echo to a reporter
-		echo $this->name . "\n";
 		array_map( $action, $this->tests );
 		$runDescription = function( Description $description ) use ( $action ) {
 			$description->doForAllTests( $action );
