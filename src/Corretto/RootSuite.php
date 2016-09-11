@@ -8,10 +8,6 @@ class RootSuite extends Suite {
 	public function __construct() {
 	}
 
-	public function getCurrentSuiteLevel() {
-		return count ( $this->currentSuites );
-	}
-
 	public function addTest( Test $test ) {
 		$currentSuite = $this->getCurrentSuite();
 		if ( ! $currentSuite ) {
@@ -76,14 +72,5 @@ class RootSuite extends Suite {
 			return;
 		}
 		$this->emit( 'test-success', $test );
-	}
-
-	// TODO: move to reporter
-	public function echoIndent() {
-		$indentLevel = $this->getCurrentSuiteLevel();
-		while( $indentLevel > 0 ) {
-			echo '  ';
-			$indentLevel --;
-		}
 	}
 }

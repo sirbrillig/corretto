@@ -25,7 +25,7 @@ class Base {
 	public function epilogue() {
 		$failureCount = count( $this->failedTests );
 		if ( $failureCount < 1 ) {
-			echo "$this->testCount tests passed\n";
+			echo "\n$this->testCount tests passed\n";
 			return;
 		}
 		echo "\n$failureCount of $this->testCount tests failed:\n\n";

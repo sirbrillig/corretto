@@ -15,5 +15,5 @@ $loadFile = function( $fileName ) {
 $root = new \Corretto\RootSuite();
 \Corretto\setRootSuite( $root );
 array_map( $loadFile, $argv );
-new \Corretto\Reporters\Base( $root );
+new \Corretto\Reporters\Spec( $root );
 $root->run();
