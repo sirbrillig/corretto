@@ -8,6 +8,8 @@ class Test {
 
 	public $parent;
 
+	// TODO: allow skipping test with no callable
+	// TODO: allow skipping test by calling a `skip` function
 	public function __construct( string $name, callable $callable ) {
 		$this->name = $name;
 		$this->callable = $callable;

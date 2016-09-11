@@ -10,6 +10,7 @@ class Suite {
 
 	public $parent;
 
+	// TODO: add before/after
 	public function __construct( $name, $callable ) {
 		$this->name = $name;
 		$this->callable = $callable;
@@ -46,10 +47,6 @@ class Suite {
 				$handler( $data );
 			}, $this->handlers[ $key ] );
 		}
-	}
-
-	public function addFailure( Failure $failure ) {
-		$this->parent && $this->parent->addFailure( $failure );
 	}
 
 	public function doForAllTests( callable $action ) {
