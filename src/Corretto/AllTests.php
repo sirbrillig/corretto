@@ -3,12 +3,12 @@ namespace Corretto;
 
 class AllTests {
 	private $testCount = 0;
-	private $descriptions = [];
+	private $suites = [];
 	private $failures = [];
-	private $currentDescriptions = [];
+	private $currentSuites = [];
 
-	public function getCurrentDescriptionLevel() {
-		return count ( $this->currentDescriptions );
+	public function getCurrentSuiteLevel() {
+		return count ( $this->currentSuites );
 	}
 
 	public function addFailure( Failure $failure ) {
@@ -28,50 +28,50 @@ class AllTests {
 	}
 
 	public function addTest( Test $test ) {
-		$currentDescription = $this->getCurrentDescription();
-		if ( ! $currentDescription ) {
+		$currentSuite = $this->getCurrentSuite();
+		if ( ! $currentSuite ) {
 			throw new \Exception( 'calls to `it` must be inside a `describe` block' );
 		}
-		$currentDescription->addTest( $test );
+		$currentSuite->addTest( $test );
 	}
 
-	public function addDescription( Description $description ) {
-		$description->on( 'startDescription', [ $this, 'setCurrentDescription' ] );
-		$description->on( 'endDescription', [ $this, 'endCurrentDescription' ] );
-		$currentDescription = $this->getCurrentDescription();
-		if ( $currentDescription ) {
-			$currentDescription->addDescription( $description );
+	public function addSuite( Suite $suite ) {
+		$suite->on( 'startSuite', [ $this, 'setCurrentSuite' ] );
+		$suite->on( 'endSuite', [ $this, 'endCurrentSuite' ] );
+		$currentSuite = $this->getCurrentSuite();
+		if ( $currentSuite ) {
+			$currentSuite->addSuite( $suite );
 			return;
 		}
-		$description->parent = $this;
-		$this->descriptions[] = $description;
+		$suite->parent = $this;
+		$this->suites[] = $suite;
 	}
 
 	public function getName() {
 		return '';
 	}
 
-	public function getDescriptions() {
-		return $this->descriptions;
+	public function getSuites() {
+		return $this->suites;
 	}
 
-	public function setCurrentDescription( Description $description ) {
+	public function setCurrentSuite( Suite $suite ) {
 		// TODO: move this echo to a reporter
 		$this->echoIndent();
-		echo $description->getName() . "\n";
-		$this->currentDescriptions[] = $description;
+		echo $suite->getName() . "\n";
+		$this->currentSuites[] = $suite;
 	}
 
-	public function endCurrentDescription() {
-		array_pop( $this->currentDescriptions );
+	public function endCurrentSuite() {
+		array_pop( $this->currentSuites );
 	}
 
-	public function getCurrentDescription() {
-		return end( $this->currentDescriptions );
+	public function getCurrentSuite() {
+		return end( $this->currentSuites );
 	}
 
 	public function run() {
-		array_map( [ $this, 'runDescription' ], $this->getDescriptions() );
+		array_map( [ $this, 'runSuite' ], $this->getSuites() );
 		echo "\n";
 		$testCount = $this->testCount;
 		$failureCount = count( $this->getFailures() );
@@ -83,8 +83,8 @@ class AllTests {
 		$this->echoFailures();
 	}
 
-	public function runDescription( Description $description ) {
-		$description->doForAllTests( [ $this, 'runTest' ] );
+	public function runSuite( Suite $suite ) {
+		$suite->doForAllTests( [ $this, 'runTest' ] );
 	}
 
 	public function runTest( Test $test ) {
@@ -94,7 +94,7 @@ class AllTests {
 	}
 
 	public function echoIndent() {
-		$indentLevel = $this->getCurrentDescriptionLevel();
+		$indentLevel = $this->getCurrentSuiteLevel();
 		while( $indentLevel > 0 ) {
 			echo '  ';
 			$indentLevel --;

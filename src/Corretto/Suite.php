@@ -1,8 +1,8 @@
 <?php
 namespace Corretto;
 
-class Description {
-	private $descriptions = [];
+class Suite {
+	private $suites = [];
 	private $tests = [];
 	private $callable = null;
 	private $name = '';
@@ -15,9 +15,9 @@ class Description {
 		$this->callable = $callable;
 	}
 
-	public function addDescription( Description $description ) {
-		$description->parent = $this;
-		$this->descriptions[] = $description;
+	public function addSuite( Suite $suite ) {
+		$suite->parent = $this;
+		$this->suites[] = $suite;
 	}
 
 	public function addTest( Test $test ) {
@@ -49,14 +49,14 @@ class Description {
 	}
 
 	public function doForAllTests( callable $action ) {
-		$this->emit( 'startDescription', $this );
+		$this->emit( 'startSuite', $this );
 		( $this->callable )();
 		array_map( $action, $this->tests );
-		$runDescription = function( Description $description ) use ( $action ) {
-			$description->doForAllTests( $action );
+		$runSuite = function( Suite $suite ) use ( $action ) {
+			$suite->doForAllTests( $action );
 		};
-		array_map( $runDescription, $this->descriptions );
-		$this->emit( 'endDescription', $this );
+		array_map( $runSuite, $this->suites );
+		$this->emit( 'endSuite', $this );
 	}
 }
 

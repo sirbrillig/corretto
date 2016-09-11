@@ -13,6 +13,6 @@ $loadFile = function( $fileName ) {
 };
 
 $root = new \Corretto\AllTests();
-\Corretto\setRootDescription( $root );
+\Corretto\setRootSuite( $root );
 array_map( $loadFile, $argv );
 $root->run();

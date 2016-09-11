@@ -1,23 +1,23 @@
 <?php
 namespace Corretto;
 
-$rootDescription;
+$rootSuite;
 
-function setRootDescription( $description ) {
-	global $rootDescription;
-	$rootDescription = $description;
+function setRootSuite( $suite ) {
+	global $rootSuite;
+	$rootSuite = $suite;
 }
 
 function describe( string $name, callable $callable ) {
-	global $rootDescription;
-	$desc = new Description( $name, $callable );
-	$rootDescription->addDescription( $desc );
+	global $rootSuite;
+	$desc = new Suite( $name, $callable );
+	$rootSuite->addSuite( $desc );
 }
 
 function it( string $name, callable $callable ) {
-	global $rootDescription;
+	global $rootSuite;
 	$test = new Test( $name, $callable );
-	$rootDescription->addTest( $test );
+	$rootSuite->addTest( $test );
 }
 
 function assert( $expression = false ) {
