@@ -96,7 +96,7 @@ describe( 'Runner', function() {
 		} );
 	} );
 
-	describe( 'runSuite', function() {
+	describe( 'runSuite()', function() {
 		it( 'runs all the tests for a suite', function() {
 			$testSpy1 = new Spy();
 			$testSpy2 = new Spy();
@@ -114,9 +114,9 @@ describe( 'Runner', function() {
 		it( 'calls any "beforeEach" function on the suite before each test', function() {
 			$testSpy1 = new Spy();
 			$testSpy2 = new Spy();
-			$test1 = new Test( 'foo', $testSpy1 );
-			$test2 = new Test( 'foo', $testSpy2 );
-			$suite = new Suite( 'when bar' );
+			$test1 = new Test( 'beforeEach test 1', $testSpy1 );
+			$test2 = new Test( 'beforeEach test 2', $testSpy2 );
+			$suite = new Suite( 'beforeEach suite' );
 			$suite->addTest( $test1 );
 			$suite->addTest( $test2 );
 			$val = 0;
@@ -133,9 +133,32 @@ describe( 'Runner', function() {
 				return $args[0]->foo === 2;
 			} ) );
 		} );
+
+		it( 'calls any "before" function on the suite before all tests in that suite', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$test1 = new Test( 'before test 1', $testSpy1 );
+			$test2 = new Test( 'before test 2', $testSpy2 );
+			$suite = new Suite( 'before suite' );
+			$suite->addTest( $test1 );
+			$suite->addTest( $test2 );
+			$val = 0;
+			$suite->before = function( $context ) use ( &$val ) {
+				$val ++;
+				$context->foo = $val;
+			};
+			$runner = new Runner();
+			$runner->runSuite( $suite );
+			assert( $testSpy1->was_called_when( function( $args ) {
+				return $args[0]->foo === 1;
+			} ) );
+			assert( $testSpy2->was_called_when( function( $args ) {
+				return $args[0]->foo === 1;
+			} ) );
+		} );
 	} );
 
-	describe( 'run', function() {
+	describe( 'run()', function() {
 		it( 'runs all suites in the runner', function() {
 			$testSpy1 = new Spy();
 			$testSpy2 = new Spy();

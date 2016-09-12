@@ -44,6 +44,9 @@ class Runner extends Emitter {
 	}
 
 	public function runSuite( Suite $suite ) {
+		if ( $suite->before ) {
+			( $suite->before )( $suite->context );
+		}
 		$suite->doForAllTests( [ $this, 'runTest' ] );
 	}
 
@@ -54,6 +57,9 @@ class Runner extends Emitter {
 		}
 		try {
 			$context = new \StdClass();
+			if ( $test->parent ) {
+				$context = $test->parent->context;
+			}
 			if ( $test->parent && $test->parent->beforeEach ) {
 				( $test->parent->beforeEach )( $context );
 			}

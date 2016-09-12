@@ -9,11 +9,14 @@ class Suite extends Emitter {
 
 	public $parent;
 	public $beforeEach;
+	public $before;
+	public $context;
 
 	// TODO: add before/after
 	public function __construct( string $name, callable $callable = null ) {
 		$this->name = $name;
 		$this->callable = $callable;
+		$this->context = new \StdClass();
 	}
 
 	public function addSuite( Suite $suite ) {
@@ -39,6 +42,7 @@ class Suite extends Emitter {
 		$this->callable && ( $this->callable )( $this );
 		array_map( $action, $this->tests );
 		$runSuite = function( Suite $suite ) use ( $action ) {
+			$suite->context = $this->context;
 			$suite->doForAllTests( $action );
 		};
 		array_map( $runSuite, $this->suites );
