@@ -35,7 +35,7 @@ class Suite extends Emitter {
 
 	public function doForAllTests( callable $action ) {
 		$this->emit( 'suite-start', $this );
-		( $this->callable )();
+		( $this->callable )( $this );
 		array_map( $action, $this->tests );
 		$runSuite = function( Suite $suite ) use ( $action ) {
 			$suite->doForAllTests( $action );

@@ -1,7 +1,7 @@
 <?php
 
 use function \Corretto\{describe, it, assert};
-use \Corretto\{Test, Runner};
+use \Corretto\{Suite, Test, Runner};
 
 describe( 'Runner', function() {
 	describe( 'runTest()', function() {
@@ -92,6 +92,25 @@ describe( 'Runner', function() {
 			$runner->runTest( $test );
 			assert( $skipped );
 			assert( ! $ran );
+		} );
+	} );
+
+	describe( 'runSuite', function() {
+		it( 'runs all the tests for a suite', function() {
+			$ran = [];
+			$test1 = new Test( 'foo', function() use ( &$ran ) {
+				$ran[] = 'foo';
+			} );
+			$test2 = new Test( 'bar', function() use ( &$ran ) {
+				$ran[] = 'bar';
+			} );
+			$suite = new Suite( 'when bar', function( $suite ) use ( &$test1, &$test2 ) {
+				$suite->addTest( $test1 );
+				$suite->addTest( $test2 );
+			} );
+			$runner = new Runner();
+			$runner->runSuite( $suite );
+			assert( count( $ran ) === 2 );
 		} );
 	} );
 } );
