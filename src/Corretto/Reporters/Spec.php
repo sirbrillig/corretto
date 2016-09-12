@@ -2,8 +2,6 @@
 namespace Corretto\Reporters;
 
 class Spec extends Base {
-	protected $failedTests = [];
-	protected $testCount = 0;
 	protected $suiteCount = 0;
 
 	public function __construct( $runner ) {
@@ -23,7 +21,6 @@ class Spec extends Base {
 	}
 
 	public function success( $test ) {
-		$this->testCount ++;
 		$this->echoIndent();
 		echo ' √ ' . $test->getName() . "\n";
 	}
@@ -35,7 +32,6 @@ class Spec extends Base {
 	}
 
 	public function fail( $test ) {
-		$this->testCount ++;
 		$this->failedTests[] = $test;
 		$this->echoIndent();
 		echo ' X ' . $test->getName() . "\n";

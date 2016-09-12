@@ -10,11 +10,15 @@ class Base {
 		$runner->on( 'test-success', [ $this, 'success' ] );
 		$runner->on( 'test-skip', [ $this, 'skip' ] );
 		$runner->on( 'test-failure', [ $this, 'fail' ] );
+		$runner->on( 'test-complete', [ $this, 'complete' ] );
 		$runner->on( 'tests-end', [ $this, 'epilogue' ] );
 	}
 
-	public function success( $test ) {
+	public function complete() {
 		$this->testCount ++;
+	}
+
+	public function success( $test ) {
 		echo ' √ ' . $test->getFullName() . "\n";
 	}
 
@@ -24,7 +28,6 @@ class Base {
 	}
 
 	public function fail( $test ) {
-		$this->testCount ++;
 		$this->failedTests[] = $test;
 		echo ' X ' . $test->getFullName() . "\n";
 	}

@@ -61,8 +61,10 @@ class Runner extends Emitter {
 		} catch ( \Exception $e ) {
 			$test->setException( $e );
 			$this->emit( 'test-failure', $test );
+			$this->emit( 'test-complete', $test );
 			return;
 		}
 		$this->emit( 'test-success', $test );
+		$this->emit( 'test-complete', $test );
 	}
 }
