@@ -46,7 +46,7 @@ class Base {
 		$index = 0;
 		array_map( function( $test ) use ( &$index ) {
 			$index ++;
-			echo $index . '. ' . $test->getFullName() . ': ' . $test->getException()->getMessage() . "\n";
+			echo $index . '. ' . $test->getFullName() . ': ' . $test->getException()->getMessage() . "\n" . strval( $test->getException() ) . "\n\n";
 		}, $this->failedTests );
 	}
 }
