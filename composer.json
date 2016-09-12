@@ -19,5 +19,8 @@
             "name": "Payton Swick",
             "email": "payton@foolord.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "sirbrillig/spies": "^1.4"
+    }
 }

@@ -2,6 +2,7 @@
 
 use function \Corretto\{describe, it, assert};
 use \Corretto\{Suite, Test, Runner};
+use \Spies\Spy;
 
 describe( 'Runner', function() {
 	describe( 'runTest()', function() {
@@ -111,6 +112,42 @@ describe( 'Runner', function() {
 			$runner = new Runner();
 			$runner->runSuite( $suite );
 			assert( count( $ran ) === 2 );
+		} );
+	} );
+
+	describe( 'run', function() {
+		it( 'runs all suites in the runner', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$test1 = new Test( 'foo', $testSpy1 );
+			$test2 = new Test( 'foo', $testSpy2 );
+			$suite1 = new Suite( 'when bar1', function( $suite ) use ( &$test1 ) {
+				$suite->addTest( $test1 );
+			} );
+			$suite2 = new Suite( 'when bar2', function( $suite ) use ( &$test2 ) {
+				$suite->addTest( $test2 );
+			} );
+			$runner = new Runner();
+			$runner->addSuite( $suite1 );
+			$runner->addSuite( $suite2 );
+			$runner->run();
+			assert( $testSpy1->was_called() && $testSpy2->was_called() );
+		} );
+
+		it( 'emits a tests-end event when all tests are complete', function() {
+			$testSpy = new Spy();
+			$suiteEnd = new Spy();
+			$test = new Test( 'foo', $testSpy );
+			$suite = new Suite( 'when bar', function( $suite ) use ( &$test ) {
+				$suite->addTest( $test );
+			} );
+			$runner = new Runner();
+			$runner->on( 'tests-end', function() use ( &$suiteEnd ) {
+				$suiteEnd();
+			} );
+			$runner->addSuite( $suite );
+			$runner->run();
+			assert( $testSpy->was_called_before( $suiteEnd ) );
 		} );
 	} );
 } );
