@@ -3,10 +3,12 @@ namespace Corretto\Reporters;
 
 class Base {
 	protected $failedTests = [];
+	protected $skippedTests = [];
 	protected $testCount = 0;
 
 	public function __construct( $runner ) {
 		$runner->on( 'test-success', [ $this, 'success' ] );
+		$runner->on( 'test-skip', [ $this, 'skip' ] );
 		$runner->on( 'test-failure', [ $this, 'fail' ] );
 		$runner->on( 'tests-end', [ $this, 'epilogue' ] );
 	}
@@ -14,6 +16,12 @@ class Base {
 	public function success( $test ) {
 		$this->testCount ++;
 		echo ' √ ' . $test->getFullName() . "\n";
+	}
+
+	public function skip( $test ) {
+		$this->testCount ++;
+		$this->skippedTests[] = $test;
+		echo ' ~ ' . $test->getFullName() . "\n";
 	}
 
 	public function fail( $test ) {
@@ -24,6 +32,10 @@ class Base {
 
 	public function epilogue() {
 		$failureCount = count( $this->failedTests );
+		$skipCount = count( $this->skippedTests );
+		if ( $skipCount > 1 ) {
+			echo "\n$this->skipCount tests skipped";
+		}
 		if ( $failureCount < 1 ) {
 			echo "\n$this->testCount tests passed\n";
 			return;

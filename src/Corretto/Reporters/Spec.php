@@ -7,11 +7,9 @@ class Spec extends Base {
 	protected $suiteCount = 0;
 
 	public function __construct( $runner ) {
+		parent::__construct( $runner );
 		$runner->on( 'suite-start', [ $this, 'startSuite' ] );
 		$runner->on( 'suite-end', [ $this, 'endSuite' ] );
-		$runner->on( 'test-success', [ $this, 'success' ] );
-		$runner->on( 'test-failure', [ $this, 'fail' ] );
-		$runner->on( 'tests-end', [ $this, 'epilogue' ] );
 	}
 
 	public function startSuite( $suite ) {
@@ -28,6 +26,13 @@ class Spec extends Base {
 		$this->testCount ++;
 		$this->echoIndent();
 		echo ' √ ' . $test->getName() . "\n";
+	}
+
+	public function skip( $test ) {
+		$this->testCount ++;
+		$this->skippedTests[] = $test;
+		$this->echoIndent();
+		echo ' ~ ' . $test->getName() . "\n";
 	}
 
 	public function fail( $test ) {

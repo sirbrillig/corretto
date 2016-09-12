@@ -4,6 +4,7 @@ use function \Corretto\{describe, it, assert};
 
 describe( 'describe', function() {
 	describe( 'when nested', function() {
+		it( 'skips tests' );
 		it( 'passes if its argument is true', function() {
 			assert( true );
 		} );

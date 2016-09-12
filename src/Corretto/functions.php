@@ -12,7 +12,7 @@ function describe( string $name, callable $callable ) {
 	$runner->addSuite( $desc );
 }
 
-function it( string $name, callable $callable ) {
+function it( string $name, callable $callable = null ) {
 	global $runner;
 	$test = new Test( $name, $callable );
 	$runner->addTest( $test );
