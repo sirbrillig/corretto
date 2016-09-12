@@ -1208,16 +1208,16 @@
         },
         {
             "name": "sirbrillig/spies",
-            "version": "v1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sirbrillig/spies.git",
-                "reference": "5016f5e7ad47eb875aa195b58892d48d7681d995"
+                "reference": "92de74cb8d4d60b5da1beda95fb9479457e95d52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sirbrillig/spies/zipball/5016f5e7ad47eb875aa195b58892d48d7681d995",
-                "reference": "5016f5e7ad47eb875aa195b58892d48d7681d995",
+                "url": "https://api.github.com/repos/sirbrillig/spies/zipball/92de74cb8d4d60b5da1beda95fb9479457e95d52",
+                "reference": "92de74cb8d4d60b5da1beda95fb9479457e95d52",
                 "shasum": ""
             },
             "require": {
@@ -1252,7 +1252,7 @@
                 "spy",
                 "stubs"
             ],
-            "time": "2016-08-09 17:01:14"
+            "time": "2016-09-12 17:05:46"
         },
         {
             "name": "symfony/yaml",
