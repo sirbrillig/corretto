@@ -1,6 +1,6 @@
 <?php
 
-use function \Corretto\{describe, it, assert};
+use function \Corretto\{describe, it, assert, skip};
 use \Corretto\{Suite, Test, Runner};
 use \Spies\Spy;
 
@@ -98,20 +98,40 @@ describe( 'Runner', function() {
 
 	describe( 'runSuite', function() {
 		it( 'runs all the tests for a suite', function() {
-			$ran = [];
-			$test1 = new Test( 'foo', function() use ( &$ran ) {
-				$ran[] = 'foo';
-			} );
-			$test2 = new Test( 'bar', function() use ( &$ran ) {
-				$ran[] = 'bar';
-			} );
-			$suite = new Suite( 'when bar', function( $suite ) use ( &$test1, &$test2 ) {
-				$suite->addTest( $test1 );
-				$suite->addTest( $test2 );
-			} );
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$test1 = new Test( 'foo', $testSpy1 );
+			$test2 = new Test( 'foo', $testSpy2 );
+			$suite = new Suite( 'when bar' );
+			$suite->addTest( $test1 );
+			$suite->addTest( $test2 );
 			$runner = new Runner();
 			$runner->runSuite( $suite );
-			assert( count( $ran ) === 2 );
+			assert( $testSpy1->was_called() );
+			assert( $testSpy2->was_called() );
+		} );
+
+		it( 'calls any "beforeEach" function on the suite before each test', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$test1 = new Test( 'foo', $testSpy1 );
+			$test2 = new Test( 'foo', $testSpy2 );
+			$suite = new Suite( 'when bar' );
+			$suite->addTest( $test1 );
+			$suite->addTest( $test2 );
+			$val = 0;
+			$suite->beforeEach = function( $context ) use ( &$val ) {
+				$val ++;
+				$context->foo = $val;
+			};
+			$runner = new Runner();
+			$runner->runSuite( $suite );
+			assert( $testSpy1->was_called_when( function( $args ) {
+				return $args[0]->foo === 1;
+			} ) );
+			assert( $testSpy2->was_called_when( function( $args ) {
+				return $args[0]->foo === 2;
+			} ) );
 		} );
 	} );
 
