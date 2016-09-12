@@ -48,6 +48,10 @@ class Runner extends Emitter {
 	}
 
 	public function runTest( Test $test ) {
+		if ( $test->skip || ! $test->getTest() ) {
+			$this->emit( 'test-skip', $test );
+			return;
+		}
 		try {
 			( $test->getTest() )();
 		} catch ( \Exception $e ) {

@@ -66,6 +66,33 @@ describe( 'Runner', function() {
 			$runner->runTest( $test );
 			assert( $ran );
 		} );
+
+		it( 'skips a test if the test is missing a function', function() {
+			$test = new Test( 'foo' );
+			$skipped = false;
+			$runner = new Runner();
+			$runner->on( 'test-skip', function() use ( &$skipped ) {
+				$skipped = true;
+			} );
+			$runner->runTest( $test );
+			assert( $skipped );
+		} );
+
+		it( 'skips a test if the test is marked skipped', function() {
+			$ran = false;
+			$test = new Test( 'foo', function() use ( &$ran ) {
+				$ran = true;
+			} );
+			$test->skip = true;
+			$skipped = false;
+			$runner = new Runner();
+			$runner->on( 'test-skip', function() use ( &$skipped ) {
+				$skipped = true;
+			} );
+			$runner->runTest( $test );
+			assert( $skipped );
+			assert( ! $ran );
+		} );
 	} );
 } );
 

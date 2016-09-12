@@ -7,12 +7,14 @@ class Test {
 	private $exception;
 
 	public $parent;
+	public $skip = false;
 
-	// TODO: allow skipping test with no callable
-	// TODO: allow skipping test by calling a `skip` function
-	public function __construct( string $name, callable $callable ) {
+	public function __construct( string $name, callable $callable = null ) {
 		$this->name = $name;
 		$this->callable = $callable;
+		if ( ! $this->callable ) {
+			$this->skip = true;
+		}
 	}
 
 	public function getFullName() {
