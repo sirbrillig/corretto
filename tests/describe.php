@@ -4,7 +4,10 @@ use function \Corretto\{describe, it, assert};
 
 describe( 'describe', function() {
 	describe( 'when nested', function() {
-		it( 'skips tests' );
+		it( 'skips tests with no function' );
+		it( \Corretto\SKIP, 'skips tests with the SKIP constant as the first argument', function() {
+			assert( false );
+		} );
 		it( 'passes if its argument is true', function() {
 			assert( true );
 		} );

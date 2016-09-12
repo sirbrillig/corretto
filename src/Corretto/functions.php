@@ -1,6 +1,8 @@
 <?php
 namespace Corretto;
 
+const SKIP = 'SKIP';
+
 function setRunner( $suite ) {
 	global $runner;
 	$runner = $suite;
@@ -20,25 +22,21 @@ function suite( string $name, callable $callable = null ) {
 	describe( $name, $callable );
 }
 
-function specify( string $name, callable $callable = null ) {
+function specify( string $name, $callable = null ) {
 	it( $name, $callable );
 }
 
-function test( string $name, callable $callable = null ) {
+function test( string $name, $callable = null ) {
 	it( $name, $callable );
 }
 
-function it( string $name, callable $callable = null ) {
+function it( string $name, $callable = null ) {
 	global $runner;
+	if ( $name === 'SKIP' ) {
+		$name = $callable;
+		$callable = null;
+	}
 	$test = new Test( $name, $callable );
-	$runner->addTest( $test );
-}
-
-// TODO: find a way to skip a suite
-function skip( string $name, callable $callable = null ) {
-	global $runner;
-	$test = new Test( $name, $callable );
-	$test->skip = true;
 	$runner->addTest( $test );
 }
 
