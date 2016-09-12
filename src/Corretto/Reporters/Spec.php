@@ -29,7 +29,6 @@ class Spec extends Base {
 	}
 
 	public function skip( $test ) {
-		$this->testCount ++;
 		$this->skippedTests[] = $test;
 		$this->echoIndent();
 		echo ' ~ ' . $test->getName() . "\n";

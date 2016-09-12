@@ -19,7 +19,6 @@ class Base {
 	}
 
 	public function skip( $test ) {
-		$this->testCount ++;
 		$this->skippedTests[] = $test;
 		echo ' ~ ' . $test->getFullName() . "\n";
 	}
@@ -33,8 +32,8 @@ class Base {
 	public function epilogue() {
 		$failureCount = count( $this->failedTests );
 		$skipCount = count( $this->skippedTests );
-		if ( $skipCount > 1 ) {
-			echo "\n$this->skipCount tests skipped";
+		if ( $skipCount > 0 ) {
+			echo "\n$skipCount tests skipped";
 		}
 		if ( $failureCount < 1 ) {
 			echo "\n$this->testCount tests passed\n";
