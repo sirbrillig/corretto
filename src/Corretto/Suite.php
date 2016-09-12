@@ -9,6 +9,7 @@ class Suite extends Emitter {
 
 	public $parent;
 	public $beforeEach;
+	public $afterEach;
 	public $before;
 	public $after;
 	public $context;

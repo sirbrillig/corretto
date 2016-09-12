@@ -67,6 +67,9 @@ class Runner extends Emitter {
 				( $test->parent->beforeEach )( $context );
 			}
 			( $test->getTest() )( $context );
+			if ( $test->parent && $test->parent->afterEach ) {
+				( $test->parent->afterEach )( $context );
+			}
 		} catch ( \Exception $e ) {
 			$test->setException( $e );
 			$this->emit( 'test-failure', $test );

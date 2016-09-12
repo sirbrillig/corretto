@@ -134,6 +134,29 @@ describe( 'Runner', function() {
 			} ) );
 		} );
 
+		it( 'calls any "afterEach" function on the suite after each test', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$test1 = new Test( 'afterEach test 1', $testSpy1 );
+			$test2 = new Test( 'afterEach test 2', $testSpy2 );
+			$suite = new Suite( 'afterEach suite' );
+			$suite->addTest( $test1 );
+			$suite->addTest( $test2 );
+			$val = 0;
+			$suite->afterEach = function( $context ) use ( &$val ) {
+				$val ++;
+				$context->foo = $val;
+			};
+			$runner = new Runner();
+			$runner->runSuite( $suite );
+			assert( $testSpy1->was_called_when( function( $args ) {
+				return ( ! isset( $args[0]->foo ) );
+			} ) );
+			assert( $testSpy2->was_called_when( function( $args ) {
+				return $args[0]->foo === 1;
+			} ) );
+		} );
+
 		it( 'calls any "before" function on the suite before all tests in that suite', function() {
 			$testSpy1 = new Spy();
 			$testSpy2 = new Spy();
