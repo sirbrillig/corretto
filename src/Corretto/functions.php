@@ -8,17 +8,24 @@ function setRunner( $suite ) {
 	$runner = $suite;
 }
 
-function describe( string $name, callable $callable ) {
+function describe( string $name, $callable = null, $maybeCallable = null ) {
 	global $runner;
-	$desc = new Suite( $name, $callable );
-	$runner->addSuite( $desc );
+	$skip = false;
+	if ( $name === 'SKIP' ) {
+		$name = $callable;
+		$callable = $maybeCallable;
+		$skip = true;
+	}
+	$suite = new Suite( $name, $callable );
+	$suite->skip = $skip;
+	$runner->addSuite( $suite );
 }
 
-function context( string $name, callable $callable = null ) {
+function context( string $name, $callable = null ) {
 	describe( $name, $callable );
 }
 
-function suite( string $name, callable $callable = null ) {
+function suite( string $name, $callable = null ) {
 	describe( $name, $callable );
 }
 

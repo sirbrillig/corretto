@@ -54,15 +54,18 @@ class Runner extends Emitter {
 	}
 
 	public function runTest( Test $test ) {
+		$context = new \StdClass();
+		if ( $test->parent ) {
+			$context = $test->parent->context;
+			if ( $test->parent->skip ) {
+				$test->skip = true;
+			}
+		}
 		if ( $test->skip || ! $test->getTest() ) {
 			$this->emit( 'test-skip', $test );
 			return;
 		}
 		try {
-			$context = new \StdClass();
-			if ( $test->parent ) {
-				$context = $test->parent->context;
-			}
 			if ( $test->parent && $test->parent->beforeEach ) {
 				( $test->parent->beforeEach )( $context );
 			}

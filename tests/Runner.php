@@ -1,6 +1,6 @@
 <?php
 
-use function \Corretto\{describe, it, assert, skip};
+use function \Corretto\{describe, it, assert};
 use \Corretto\{Suite, Test, Runner};
 use \Spies\Spy;
 
@@ -109,6 +109,20 @@ describe( 'Runner', function() {
 			$runner->runSuite( $suite );
 			assert( $testSpy1->was_called() );
 			assert( $testSpy2->was_called() );
+		} );
+
+		it( 'skips all the tests in a suite if the suite is marked skip', function() {
+			$testSpy1 = new Spy();
+			$skipSpy = new Spy();
+			$test = new Test( 'foo', $testSpy1 );
+			$runner = new Runner();
+			$runner->on( 'test-skip', $skipSpy );
+			$suite = new Suite( 'skip suite' );
+			$suite->addTest( $test );
+			$suite->skip = true;
+			$runner->runSuite( $suite );
+			assert( $skipSpy->was_called() );
+			assert( ! $testSpy1->was_called() );
 		} );
 
 		it( 'calls any "beforeEach" function on the suite before each test', function() {

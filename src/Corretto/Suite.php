@@ -8,6 +8,7 @@ class Suite extends Emitter {
 	private $name = '';
 
 	public $parent;
+	public $skip;
 	public $beforeEach;
 	public $afterEach;
 	public $before;
