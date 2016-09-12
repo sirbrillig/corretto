@@ -44,10 +44,13 @@ class Runner extends Emitter {
 	}
 
 	public function runSuite( Suite $suite ) {
-		if ( $suite->before ) {
+		if ( isset( $suite->before ) ) {
 			( $suite->before )( $suite->context );
 		}
 		$suite->doForAllTests( [ $this, 'runTest' ] );
+		if ( isset( $suite->after ) ) {
+			( $suite->after )( $suite->context );
+		}
 	}
 
 	public function runTest( Test $test ) {

@@ -10,9 +10,9 @@ class Suite extends Emitter {
 	public $parent;
 	public $beforeEach;
 	public $before;
+	public $after;
 	public $context;
 
-	// TODO: add before/after
 	public function __construct( string $name, callable $callable = null ) {
 		$this->name = $name;
 		$this->callable = $callable;

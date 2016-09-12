@@ -156,6 +156,30 @@ describe( 'Runner', function() {
 				return $args[0]->foo === 1;
 			} ) );
 		} );
+
+		it( 'calls any "after" function on the suite after all tests in that suite', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$test1 = new Test( 'after test 1', $testSpy1 );
+			$test2 = new Test( 'after test 2', $testSpy2 );
+			$suite = new Suite( 'after suite' );
+			$suite->addTest( $test1 );
+			$suite->addTest( $test2 );
+			$val = 0;
+			$suite->after = function( $context ) use ( &$val ) {
+				$val ++;
+				$context->foo = $val;
+			};
+			$runner = new Runner();
+			$runner->runSuite( $suite );
+			assert( $testSpy1->was_called_when( function( $args ) {
+				return ( ! isset( $args[0]->foo ) );
+			} ) );
+			assert( $testSpy2->was_called_when( function( $args ) {
+				return ( ! isset( $args[0]->foo ) );
+			} ) );
+			assert( $val === 1 );
+		} );
 	} );
 
 	describe( 'run()', function() {
