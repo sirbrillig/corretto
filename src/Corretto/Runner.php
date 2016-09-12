@@ -3,39 +3,41 @@ namespace Corretto;
 
 class Runner extends Emitter {
 	private $suites = [];
-	private $currentSuites = [];
+	private $currentlyPreparingSuites = [];
+
+	public $grep;
 
 	public function addTest( Test $test ) {
-		$currentSuite = $this->getCurrentSuite();
-		if ( ! $currentSuite ) {
-			throw new \Exception( 'calls to `it` must be inside a `describe` block' );
+		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
+		if ( ! $currentlyPreparingSuite ) {
+			throw new \Exception( 'new tests must be part of a test suite' );
 		}
-		$currentSuite->addTest( $test );
+		$currentlyPreparingSuite->addTest( $test );
 	}
 
 	public function addSuite( Suite $suite ) {
-		$suite->on( 'suite-start', [ $this, 'setCurrentSuite' ] );
-		$suite->on( 'suite-end', [ $this, 'endCurrentSuite' ] );
-		$currentSuite = $this->getCurrentSuite();
-		if ( $currentSuite ) {
-			$currentSuite->addSuite( $suite );
+		$suite->on( 'suite-prepare-start', [ $this, 'setCurrentlyPreparingSuite' ] );
+		$suite->on( 'suite-prepare-end', [ $this, 'endCurrentlyPreparingSuite' ] );
+		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
+		if ( $currentlyPreparingSuite ) {
+			$currentlyPreparingSuite->addSuite( $suite );
 			return;
 		}
 		$this->suites[] = $suite;
+		$suite->grep = $this->grep;
+		$suite->prepareSuite();
 	}
 
-	protected function setCurrentSuite( Suite $suite ) {
-		$this->emit( 'suite-start', $suite );
-		$this->currentSuites[] = $suite;
+	protected function setCurrentlyPreparingSuite( Suite $suite ) {
+		$this->currentlyPreparingSuites[] = $suite;
 	}
 
-	protected function endCurrentSuite() {
-		$this->emit( 'suite-end', $this->getCurrentSuite() );
-		array_pop( $this->currentSuites );
+	protected function endCurrentlyPreparingSuite() {
+		array_pop( $this->currentlyPreparingSuites );
 	}
 
-	protected function getCurrentSuite() {
-		return end( $this->currentSuites );
+	protected function getCurrentlyPreparingSuite() {
+		return end( $this->currentlyPreparingSuites );
 	}
 
 	public function run() {
@@ -44,6 +46,12 @@ class Runner extends Emitter {
 	}
 
 	public function runSuite( Suite $suite ) {
+		$suite->on( 'suite-start', function( $data = null ) {
+			$this->emit( 'suite-start', $data );
+		} );
+		$suite->on( 'suite-end', function( $data = null ) {
+			$this->emit( 'suite-end', $data );
+		} );
 		if ( isset( $suite->before ) ) {
 			( $suite->before )( $suite->context );
 		}

@@ -5,6 +5,47 @@ use \Corretto\{Suite, Test, Runner};
 use \Spies\Spy;
 
 describe( 'Runner', function() {
+	describe( 'addSuite()', function() {
+		it( 'adds all tests in the suite', function() {
+			$added = 0;
+			$suite = new Suite( 'first', function() use ( &$suite, &$added ) {
+				$test1 = new Test( 'one', function() {} );
+				$suite->addTest( $test1 );
+				$added ++;
+				$suite2 = new Suite( 'second', function() use ( &$suite2, &$added ) {
+					$test2 = new Test( 'two', function() {} );
+					$suite2->addTest( $test2 );
+					$added ++;
+				} );
+				$suite->addSuite( $suite2 );
+			} );
+			$runner = new Runner();
+			$runner->addSuite( $suite );
+			assert( $added === 2 );
+		} );
+
+		it( 'adds only tests matching "grep" if it is set', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$testSpy3 = new Spy();
+			$suite = new Suite( 'when bar', function() use ( &$suite, &$testSpy1, &$testSpy2, &$testSpy3 ) {
+				$test1 = new Test( 'grep matching', $testSpy1 );
+				$test2 = new Test( 'grep missing', $testSpy2 );
+				$test3 = new Test( 'grep another matching', $testSpy3 );
+				$suite->addTest( $test1 );
+				$suite->addTest( $test2 );
+				$suite->addTest( $test3 );
+			} );
+			$runner = new Runner();
+			$runner->grep = 'matching';
+			$runner->addSuite( $suite );
+			$runner->run();
+			assert( $testSpy1->was_called() );
+			assert( $testSpy3->was_called() );
+			assert( ! $testSpy2->was_called() );
+		} );
+	} );
+
 	describe( 'runTest()', function() {
 		it( 'runs the test function', function() {
 			$ran = false;
@@ -109,6 +150,18 @@ describe( 'Runner', function() {
 			$runner->runSuite( $suite );
 			assert( $testSpy1->was_called() );
 			assert( $testSpy2->was_called() );
+		} );
+
+		it( 'emits suite-start event when suite begins', function() {
+			$testSpy1 = new Spy();
+			$test1 = new Test( 'foo', $testSpy1 );
+			$eventSpy = new Spy();
+			$suite = new Suite( 'event suite' );
+			$suite->addTest( $test1 );
+			$runner = new Runner();
+			$runner->on( 'suite-start', $eventSpy );
+			$runner->runSuite( $suite );
+			assert( $eventSpy->was_called_before( $testSpy1 ) );
 		} );
 
 		it( 'skips all the tests in a suite if the suite is marked skip', function() {
