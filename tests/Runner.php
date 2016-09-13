@@ -291,6 +291,29 @@ describe( 'Runner', function() {
 			assert( $testSpy1->was_called() && $testSpy2->was_called() );
 		} );
 
+		it( 'does not trigger "suite-start" event for suites with no tests', function() {
+			$suite = new Suite( 'empty suite', function() use ( &$suite ) {
+				$testSpy1 = new Spy();
+				$testSpy2 = new Spy();
+				$test1 = new Test( 'grep missing 1', $testSpy1 );
+				$test2 = new Test( 'grep missing 2', $testSpy2 );
+				$suite1 = new Suite( 'empty suite 2', function() use ( &$suite1 ) {
+					$testSpy3 = new Spy();
+					$test3 = new Test( 'grep another missing', $testSpy3 );
+					$suite1->addTest( $test3 );
+				} );
+				$suite->addTest( $test1 );
+				$suite->addTest( $test2 );
+			} );
+			$runner = new Runner();
+			$eventSpy = new Spy();
+			$runner->on( 'suite-start', $eventSpy );
+			$runner->grep = 'matching';
+			$runner->addSuite( $suite );
+			$runner->run();
+			assert( ! $eventSpy->was_called() );
+		} );
+
 		it( 'emits a tests-end event when all tests are complete', function() {
 			$testSpy = new Spy();
 			$suiteEnd = new Spy();

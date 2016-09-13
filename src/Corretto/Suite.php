@@ -58,6 +58,13 @@ class Suite extends Emitter {
 	}
 
 	public function doForAllTests( callable $action ) {
+		$testCount = 0;
+		$this->doForAllTestsWithoutEvents( function() use ( &$testCount ) {
+			$testCount ++;
+		} );
+		if ( $testCount < 1 ) {
+			return;
+		}
 		$this->emit( 'suite-start', $this );
 		array_map( $action, $this->tests );
 		$runSuite = function( Suite $suite ) use ( $action ) {
@@ -72,6 +79,16 @@ class Suite extends Emitter {
 		};
 		array_map( $runSuite, $this->suites );
 		$this->emit( 'suite-end', $this );
+	}
+
+	// TODO: ugh - can we just make doForAllTests not emit events?
+	public function doForAllTestsWithoutEvents( callable $action ) {
+		array_map( $action, $this->tests );
+		$runSuite = function( Suite $suite ) use ( $action ) {
+			$suite->context = $this->context;
+			$suite->doForAllTests( $action );
+		};
+		array_map( $runSuite, $this->suites );
 	}
 }
 
