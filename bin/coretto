@@ -3,17 +3,47 @@
 
 require( './vendor/autoload.php' );
 
-array_shift( $argv );
-if ( count( $argv ) < 1 ) {
-	echo "USAGE: corretto [test_file1.php]...\n";
+$usage = "USAGE: corretto [options] [files]
+
+Options:
+ -h, --help		output usage information
+\n";
+
+$options = getopt( 'h', [ 'help' ] );
+
+if ( isset( $options['help'] ) || isset( $options['h'] ) ) {
+	echo $usage;
 	die;
 }
-$loadFile = function( $fileName ) {
-	require( $fileName );
+
+array_shift( $argv );
+if ( count( $argv ) < 1 ) {
+	echo $usage;
+	die;
+}
+
+$loadFile = function( $fileName ) use ( &$loadFiles ) {
+	if ( $fileName[0] === '.' ) {
+		return;
+	}
+	if ( is_dir( $fileName ) ) {
+		$addDirName = function( $file ) use ( &$fileName ) {
+			return $fileName . DIRECTORY_SEPARATOR . $file;
+		};
+		$dirFiles = array_map( $addDirName, array_diff( scandir( $fileName ), array( '..', '.' ) ) );
+		$loadFiles( $dirFiles );
+		return;
+	}
+	if ( preg_match( '/\.php$/', $fileName ) ) {
+		include( $fileName );
+	}
+};
+$loadFiles = function( $files ) use ( &$loadFile ) {
+	array_map( $loadFile, $files );
 };
 
 $root = new \Corretto\Runner();
 \Corretto\setRunner( $root );
-array_map( $loadFile, $argv );
+$loadFiles( $argv );
 new \Corretto\Reporters\Spec( $root );
 $root->run();
