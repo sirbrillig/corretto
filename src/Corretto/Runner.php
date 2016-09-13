@@ -46,19 +46,19 @@ class Runner extends Emitter {
 	}
 
 	public function runSuite( Suite $suite ) {
-		$suite->on( 'suite-start', function( $data = null ) {
-			$this->emit( 'suite-start', $data );
-		} );
-		$suite->on( 'suite-end', function( $data = null ) {
-			$this->emit( 'suite-end', $data );
-		} );
+		if ( $suite->getDeepTestCount() < 1 ) {
+			return;
+		}
+		$this->emit( 'suite-start', $suite );
 		if ( isset( $suite->before ) ) {
 			( $suite->before )( $suite->context );
 		}
-		$suite->doForAllTests( [ $this, 'runTest' ] );
+		array_map( [ $this, 'runTest' ], $suite->getTests() );
+		array_map( [ $this, 'runSuite' ], $suite->getSuites() );
 		if ( isset( $suite->after ) ) {
 			( $suite->after )( $suite->context );
 		}
+		$this->emit( 'suite-end', $suite );
 	}
 
 	public function runTest( Test $test ) {

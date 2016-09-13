@@ -36,6 +36,14 @@ class Suite extends Emitter {
 		$this->tests[] = $test;
 	}
 
+	public function getTests() {
+		return $this->tests;
+	}
+
+	public function getSuites() {
+		return $this->suites;
+	}
+
 	public function getName() {
 		return $this->name;
 	}
@@ -57,38 +65,17 @@ class Suite extends Emitter {
 		$this->emit( 'suite-prepare-end', $this );
 	}
 
-	public function doForAllTests( callable $action ) {
-		$testCount = 0;
-		$this->doForAllTestsWithoutEvents( function() use ( &$testCount ) {
-			$testCount ++;
-		} );
-		if ( $testCount < 1 ) {
-			return;
-		}
-		$this->emit( 'suite-start', $this );
-		array_map( $action, $this->tests );
-		$runSuite = function( Suite $suite ) use ( $action ) {
-			$suite->on( 'suite-start', function() use ( &$suite ) {
-				$this->emit( 'suite-start', $suite );
-			} );
-			$suite->on( 'suite-end', function() use ( &$suite ) {
-				$this->emit( 'suite-end', $suite );
-			} );
-			$suite->context = $this->context;
-			$suite->doForAllTests( $action );
-		};
-		array_map( $runSuite, $this->suites );
-		$this->emit( 'suite-end', $this );
+	public function getTestCount() {
+		return count( $this->tests );
 	}
 
-	// TODO: ugh - can we just make doForAllTests not emit events?
-	public function doForAllTestsWithoutEvents( callable $action ) {
-		array_map( $action, $this->tests );
-		$runSuite = function( Suite $suite ) use ( $action ) {
-			$suite->context = $this->context;
-			$suite->doForAllTests( $action );
+	public function getDeepTestCount() {
+		$count = $this->getTestCount();
+		$addToCount = function( $suite ) use ( &$count ) {
+			$count += $suite->getDeepTestCount();
 		};
-		array_map( $runSuite, $this->suites );
+		array_map( $addToCount, $this->getSuites() );
+		return $count;
 	}
 }
 
