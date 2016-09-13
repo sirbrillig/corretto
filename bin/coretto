@@ -32,7 +32,7 @@ if ( isset( $options['reporters'] ) ) {
 	}, $reporters );
 	exit;
 }
-$reporter = 'base';
+$reporter = 'spec';
 if ( isset( $options['R'] ) ) {
 	$reporter = $options['R'];
 }
