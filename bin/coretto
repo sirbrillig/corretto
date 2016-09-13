@@ -11,7 +11,7 @@ Options:
  --reporters			List available reporters
 \n";
 
-$options = getopt( 'hR:', [ 'help', 'reporter:', 'reporters' ] );
+$options = getopt( 'hR:g:', [ 'help', 'reporter:', 'reporters', 'grep:' ] );
 
 if ( isset( $options['help'] ) || isset( $options['h'] ) ) {
 	echo $usage;
@@ -63,15 +63,24 @@ $loadFiles = function( $files ) use ( &$loadFile ) {
 
 // Start runner
 $root = new \Corretto\Runner();
+if ( isset( $options['g'] ) ) {
+	$root->grep = $options['g'];
+}
+if ( isset( $options['grep'] ) ) {
+	$root->grep = $options['grep'];
+}
 \Corretto\setRunner( $root );
 $loadFiles( $argv );
 // TODO: can we make this dynamic?
 switch( $reporter ) {
+	case 'base':
+		new \Corretto\Reporters\Base( $root );
+		break;
 	case 'spec':
 		new \Corretto\Reporters\Spec( $root );
 		break;
 	default:
-		new \Corretto\Reporters\Base( $root );
+		new \Corretto\Reporters\Spec( $root );
 		break;
 }
 $root->run();
