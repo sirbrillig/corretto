@@ -1,7 +1,7 @@
 #!/usr/bin/env php -q
 <?php
 
-require( './vendor/autoload.php' );
+require( dirname( dirname( __FILE__ ) ) . '/vendor/autoload.php' );
 
 $usage = "USAGE: corretto [options] [files]
 
@@ -19,7 +19,7 @@ if ( isset( $options['help'] ) || isset( $options['h'] ) ) {
 }
 
 array_shift( $argv );
-if ( count( $argv ) < 1 ) {
+if ( count( $argv ) < 1 && ! is_dir( 'tests' ) ) {
 	echo $usage;
 	die;
 }
@@ -70,6 +70,9 @@ if ( isset( $options['grep'] ) ) {
 	$root->grep = $options['grep'];
 }
 \Corretto\setRunner( $root );
+if ( empty( $argv ) && is_dir( 'tests' ) ) {
+	$argv = [ 'tests' ];
+}
 $loadFiles( $argv );
 // TODO: can we make this dynamic?
 switch( $reporter ) {
