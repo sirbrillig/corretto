@@ -18,8 +18,23 @@ if ( isset( $options['help'] ) || isset( $options['h'] ) ) {
 	die;
 }
 
+function stripOptions( $argv, $options ) {
+	$new = [];
+	$keys = array_keys( $options );
+	$vals = array_values( $options );
+	foreach( $argv as $arg ) {
+		$pure = preg_replace( '/^--?/', '', $arg );
+		if ( ! in_array( $pure, $keys ) && ! in_array( $pure, $vals ) ) {
+			$new[] = $arg;
+		}
+	}
+	return $new;
+}
+
 array_shift( $argv );
-if ( count( $argv ) < 1 && ! is_dir( 'tests' ) ) {
+$files = stripOptions( $argv, $options );
+
+if ( count( $files ) < 1 && ! is_dir( 'tests' ) ) {
 	echo $usage;
 	die;
 }
@@ -70,10 +85,10 @@ if ( isset( $options['grep'] ) ) {
 	$root->grep = $options['grep'];
 }
 \Corretto\setRunner( $root );
-if ( empty( $argv ) && is_dir( 'tests' ) ) {
-	$argv = [ 'tests' ];
+if ( empty( $files ) && is_dir( 'tests' ) ) {
+	$files = [ 'tests' ];
 }
-$loadFiles( $argv );
+$loadFiles( $files );
 // TODO: can we make this dynamic?
 switch( $reporter ) {
 	case 'base':
