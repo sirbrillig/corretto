@@ -46,10 +46,3 @@ function it( string $name, $callable = null ) {
 	$test = new Test( $name, $callable );
 	$runner->addTest( $test );
 }
-
-// TODO: move to assertions file
-function assert( $expression = false ) {
-	if ( ! $expression ) {
-		throw new \Exception( "Failed asserting that '" . var_export( $expression, true ) . "' is true" );
-	}
-}

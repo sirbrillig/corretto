@@ -12,7 +12,10 @@
         "psr-0": {
             "Corretto": "src/"
         },
-        "files": [ "src/Corretto/functions.php" ]
+        "files": [
+            "src/Corretto/functions.php",
+            "src/Corretto/Assert.php"
+        ]
     },
     "authors": [
         {
