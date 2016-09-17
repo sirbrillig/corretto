@@ -22,3 +22,9 @@ function assertEquals( $first, $second ) {
 		throw new \Exception( "Failed asserting that '" . var_export( $first, true ) . "' is equal to '" . var_export( $second, true ) . "'" );
 	}
 }
+
+function assertNotEquals( $first, $second ) {
+	if ( $first === $second ) {
+		throw new \Exception( "Failed asserting that '" . var_export( $first, true ) . "' is not equal to '" . var_export( $second, true ) . "'" );
+	}
+}
