@@ -16,3 +16,9 @@ function assertFalse( $expression = true ) {
 		throw new \Exception( "Failed asserting that '" . var_export( $expression, true ) . "' is false" );
 	}
 }
+
+function assertEquals( $first, $second ) {
+	if ( $first !== $second ) {
+		throw new \Exception( "Failed asserting that '" . var_export( $first, true ) . "' is equal to '" . var_export( $second, true ) . "'" );
+	}
+}

@@ -1,6 +1,6 @@
 <?php
 
-use function \Corretto\{describe, it, assert, assertTrue, assertFalse};
+use function \Corretto\{describe, it, assert, assertTrue, assertFalse, assertEquals};
 
 describe( 'assert()', function() {
 	it( 'passes if its argument is true', function() {
@@ -83,5 +83,33 @@ describe( 'assertFalse()', function() {
 			throw new Exception( 'assertFalse(true) did not have the expected string. Instead it said: ' . $e->getMessage() );
 		}
 		throw new Exception( 'assertFalse(true) did not fail' );
+	} );
+} );
+
+describe( 'assertEquals()', function() {
+	it( 'passes if its first argument equals its second', function() {
+		assertEquals( 'abcd', 'abcd' );
+	} );
+
+	it( 'fails if its first argument does not equal its second', function() {
+		try {
+			assertEquals( 'abcd', 'bcde' );
+		} catch ( Exception $e ) {
+			return;
+		}
+		throw new Exception( 'assertEquals() did not fail for unequal strings' );
+	} );
+
+	it( 'fails with an expected string if its arguments are not equal', function() {
+		try {
+			assertEquals( 1234, 5432 );
+		} catch ( Exception $e ) {
+			$expected = "Failed asserting that '1234' is equal to '5432'";
+			if ( $e->getMessage() === $expected ) {
+				return;
+			}
+			throw new Exception( 'assertEquals() did not have the expected string. Instead it said: ' . $e->getMessage() );
+		}
+		throw new Exception( 'assertEquals() did not fail' );
 	} );
 } );
