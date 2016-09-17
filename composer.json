@@ -14,7 +14,8 @@
         },
         "files": [
             "src/Corretto/functions.php",
-            "src/Corretto/Assert.php"
+            "src/Corretto/Assert.php",
+            "src/Corretto/Expect.php"
         ]
     },
     "authors": [
