@@ -7,7 +7,7 @@ $usage = "USAGE: corretto [options] [files]
 
 Options:
  -h, --help			Output usage information
- -c, --colors		Force enabling colorized output
+ -c, --colors			Force enabling colorized output
  -C, --no-colors		Force disabling colorized output
  -R, --reporter <name>		Set a reporter to use (default 'spec')
  --reporters			List available reporters
