@@ -22,19 +22,19 @@ class Spec extends Base {
 
 	public function success( $test ) {
 		$this->echoIndent();
-		echo ' √ ' . $test->getName() . "\n";
+		$this->output( ' √ ' . $test->getName() . "\n", 'OK' );
 	}
 
 	public function skip( $test ) {
 		$this->skippedTests[] = $test;
 		$this->echoIndent();
-		echo ' ~ ' . $test->getName() . "\n";
+		$this->output( ' ~ ' . $test->getName() . "\n", 'WARN' );
 	}
 
 	public function fail( $test ) {
 		$this->failedTests[] = $test;
 		$this->echoIndent();
-		echo ' X ' . $test->getName() . "\n";
+		$this->output( ' X ' . $test->getName() . "\n", 'FAIL' );
 	}
 
 	protected function echoIndent() {

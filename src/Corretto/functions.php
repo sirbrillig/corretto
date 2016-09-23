@@ -46,3 +46,22 @@ function it( string $name, $callable = null ) {
 	$test = new Test( $name, $callable );
 	$runner->addTest( $test );
 }
+
+function color( string $message, string $type ) {
+	$key = "";
+	switch( $type ) {
+	case 'FAIL':
+		$key = '[31m';
+		break;
+	case 'OK':
+		$key = '[32m';
+		break;
+	case 'WARN':
+		$key = '[33m';
+		break;
+	default:
+		return $message;
+	}
+	return chr( 27 ) . "$key" . "$message" . chr( 27 ) . "[0m";
+}
+

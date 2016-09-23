@@ -6,6 +6,7 @@ class Runner extends Emitter {
 	private $currentlyPreparingSuites = [];
 
 	public $grep;
+	public $colorEnabled;
 
 	public function addTest( Test $test ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();

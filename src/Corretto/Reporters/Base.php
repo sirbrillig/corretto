@@ -1,12 +1,15 @@
 <?php
 namespace Corretto\Reporters;
 
+use function \Corretto\color;
+
 class Base {
 	protected $failedTests = [];
 	protected $skippedTests = [];
 	protected $testCount = 0;
 
 	public function __construct( $runner ) {
+		$this->colorEnabled = $runner->colorEnabled;
 		$runner->on( 'test-success', [ $this, 'success' ] );
 		$runner->on( 'test-skip', [ $this, 'skip' ] );
 		$runner->on( 'test-failure', [ $this, 'fail' ] );
@@ -14,39 +17,49 @@ class Base {
 		$runner->on( 'tests-end', [ $this, 'epilogue' ] );
 	}
 
+	public function output( string $message, string $type = '' ) {
+		if ( ! $this->colorEnabled ) {
+			echo $message;
+			return;
+		}
+		echo color( $message, $type );
+	}
+
 	public function complete() {
 		$this->testCount ++;
 	}
 
 	public function success( $test ) {
-		echo ' √ ' . $test->getFullName() . "\n";
+		$this->output( ' √ ' . $test->getFullName() . "\n", 'OK' );
 	}
 
 	public function skip( $test ) {
 		$this->skippedTests[] = $test;
-		echo ' ~ ' . $test->getFullName() . "\n";
+		$this->output( ' ~ ' . $test->getFullName() . "\n", 'WARN' );
 	}
 
 	public function fail( $test ) {
 		$this->failedTests[] = $test;
-		echo ' X ' . $test->getFullName() . "\n";
+		$this->output( ' X ' . $test->getFullName() . "\n", 'FAIL' );
 	}
 
 	public function epilogue() {
 		$failureCount = count( $this->failedTests );
 		$skipCount = count( $this->skippedTests );
 		if ( $skipCount > 0 ) {
-			echo "\n$skipCount tests skipped";
+			$this->output( "\n$skipCount tests skipped", 'WARN' );
 		}
 		if ( $failureCount < 1 ) {
-			echo "\n$this->testCount tests passed\n";
+			$this->output( "\n$this->testCount tests passed\n", 'OK' );
 			return;
 		}
-		echo "\n$failureCount of $this->testCount tests failed:\n\n";
+		$this->output( "\n$failureCount of $this->testCount tests failed:\n\n", 'FAIL' );
 		$index = 0;
 		array_map( function( $test ) use ( &$index ) {
 			$index ++;
-			echo $index . '. ' . $test->getFullName() . ': ' . $test->getException()->getMessage() . "\n" . strval( $test->getException() ) . "\n\n";
+			$this->output( $index . '. ' . $test->getFullName() . ': ' );
+			$this->output( $test->getException()->getMessage() . "\n\n", 'FAIL' );
+			$this->output( strval( $test->getException() ) . "\n\n" );
 		}, $this->failedTests );
 	}
 }

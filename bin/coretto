@@ -78,6 +78,8 @@ $loadFiles = function( $files ) use ( &$loadFile ) {
 
 // Start runner
 $root = new \Corretto\Runner();
+// TODO: make color an option
+$root->colorEnabled = true;
 if ( isset( $options['g'] ) ) {
 	$root->grep = $options['g'];
 }
