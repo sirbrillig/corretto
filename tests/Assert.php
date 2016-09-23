@@ -104,7 +104,7 @@ describe( 'assertEquals()', function() {
 		try {
 			assertEquals( 1234, 5432 );
 		} catch ( Exception $e ) {
-			$expected = "Failed asserting that '1234' is equal to '5432'";
+			$expected = "Failed asserting that 1234 is equal to 5432";
 			if ( $e->getMessage() === $expected ) {
 				return;
 			}

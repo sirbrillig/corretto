@@ -17,14 +17,14 @@ function assertFalse( $expression = true ) {
 	}
 }
 
-function assertEquals( $first, $second ) {
-	if ( $first !== $second ) {
-		throw new \Exception( "Failed asserting that '" . var_export( $first, true ) . "' is equal to '" . var_export( $second, true ) . "'" );
+function assertEquals( $expected, $actual ) {
+	if ( $expected !== $actual ) {
+		throw new \Exception( "Failed asserting that " . var_export( $expected, true ) . " is equal to " . var_export( $actual, true ) . "" );
 	}
 }
 
-function assertNotEquals( $first, $second ) {
-	if ( $first === $second ) {
-		throw new \Exception( "Failed asserting that '" . var_export( $first, true ) . "' is not equal to '" . var_export( $second, true ) . "'" );
+function assertNotEquals( $expected, $actual ) {
+	if ( $expected === $actual ) {
+		throw new \Exception( "Failed asserting that '" . var_export( $expected, true ) . "' is not equal to '" . var_export( $actual, true ) . "'" );
 	}
 }
