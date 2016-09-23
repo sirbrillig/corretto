@@ -7,11 +7,13 @@ $usage = "USAGE: corretto [options] [files]
 
 Options:
  -h, --help			Output usage information
+ -c, --colors		Force enabling colorized output
+ -C, --no-colors		Force disabling colorized output
  -R, --reporter <name>		Set a reporter to use (default 'spec')
  --reporters			List available reporters
 \n";
 
-$options = getopt( 'hR:g:', [ 'help', 'reporter:', 'reporters', 'grep:' ] );
+$options = getopt( 'hR:g:cC', [ 'help', 'reporter:', 'reporters', 'grep:', 'colors', 'no-colors' ] );
 
 if ( isset( $options['help'] ) || isset( $options['h'] ) ) {
 	echo $usage;
@@ -78,8 +80,15 @@ $loadFiles = function( $files ) use ( &$loadFile ) {
 
 // Start runner
 $root = new \Corretto\Runner();
-// TODO: make color an option
-$root->colorEnabled = true;
+if ( posix_isatty( STDOUT ) ) {
+	$root->colorEnabled = true;
+}
+if ( isset( $options['c'] ) || isset( $options['colors'] ) ) {
+	$root->colorEnabled = true;
+}
+if ( isset( $options['C'] ) || isset( $options['no-colors'] ) ) {
+	$root->colorEnabled = false;
+}
 if ( isset( $options['g'] ) ) {
 	$root->grep = $options['g'];
 }
