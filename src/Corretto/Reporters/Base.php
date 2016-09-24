@@ -59,6 +59,7 @@ class Base {
 			$index ++;
 			$this->output( $index . '. ' . $test->getFullName() . ': ' );
 			$this->output( $test->getException()->getMessage() . "\n\n", 'FAIL' );
+			// TODO: can we get a stack trace that excludes the internals of Corretto?
 			$this->output( strval( $test->getException() ) . "\n\n" );
 		}, $this->failedTests );
 	}
