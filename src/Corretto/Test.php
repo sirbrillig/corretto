@@ -2,9 +2,9 @@
 namespace Corretto;
 
 class Test {
-	private $name;
-	private $callable;
-	private $exception;
+	protected $name;
+	protected $callable;
+	protected $exception;
 
 	public $parent;
 	public $skip = false;

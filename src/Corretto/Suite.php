@@ -2,10 +2,10 @@
 namespace Corretto;
 
 class Suite extends Emitter {
-	private $suites = [];
-	private $tests = [];
-	private $callable = null;
-	private $name = '';
+	protected $suites = [];
+	protected $tests = [];
+	protected $callable = null;
+	protected $name = '';
 
 	public $parent;
 	public $skip;
@@ -16,7 +16,7 @@ class Suite extends Emitter {
 	public $context;
 	public $grep;
 
-	public function __construct( string $name, callable $callable = null ) {
+	public function __construct( string $name = '', callable $callable = null ) {
 		$this->name = $name;
 		$this->callable = $callable;
 		$this->context = new \StdClass();

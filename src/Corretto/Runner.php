@@ -1,9 +1,7 @@
 <?php
 namespace Corretto;
 
-class Runner extends Emitter {
-	private $suites = [];
-	private $tests = [];
+class Runner extends Suite {
 	private $currentlyPreparingSuites = [];
 	private $hasFailures = false;
 	private $hasOnePassingTest = false;
@@ -49,8 +47,8 @@ class Runner extends Emitter {
 	}
 
 	public function run() {
-		array_map( [ $this, 'runTest' ], $this->tests );
-		array_map( [ $this, 'runSuite' ], $this->suites );
+		array_map( [ $this, 'runTest' ], $this->getTests() );
+		array_map( [ $this, 'runSuite' ], $this->getSuites() );
 		$this->emit( 'tests-end' );
 		return ! $this->hasFailures && $this->hasOnePassingTest;
 	}
