@@ -25,8 +25,7 @@ class Runner extends Suite {
 			$currentlyPreparingSuite->addSuite( $suite );
 			return;
 		}
-		$this->suites[] = $suite;
-		$suite->grep = $this->grep;
+		parent::addSuite( $suite );
 		$suite->prepareSuite();
 	}
 
