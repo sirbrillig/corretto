@@ -26,7 +26,6 @@ class Runner extends Suite {
 			return;
 		}
 		parent::addSuite( $suite );
-		$suite->prepareSuite();
 	}
 
 	protected function setCurrentlyPreparingSuite( Suite $suite ) {

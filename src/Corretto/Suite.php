@@ -24,6 +24,7 @@ class Suite extends Emitter {
 	public function addSuite( Suite $suite ) {
 		$suite->parent = $this;
 		$this->suites[] = $suite;
+		$suite->prepareSuite();
 	}
 
 	public function addTest( Test $test ) {
@@ -56,10 +57,6 @@ class Suite extends Emitter {
 		}
 		$this->emit( 'suite-prepare-start', $this );
 		( $this->callable )( $this );
-		$prepare = function( Suite $suite ) {
-			$suite->prepareSuite();
-		};
-		array_map( $prepare, $this->suites );
 		$this->emit( 'suite-prepare-end', $this );
 	}
 
