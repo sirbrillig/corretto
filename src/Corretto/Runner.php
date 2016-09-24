@@ -42,21 +42,21 @@ class Runner extends Suite {
 	}
 
 	public function run() {
-		array_map( [ $this, 'runTest' ], $this->getTests() );
+		array_map( [ $this, 'runTest' ], $this->getTests( $this->grep ) );
 		array_map( [ $this, 'runSuite' ], $this->getSuites() );
 		$this->emit( 'tests-end' );
 		return ! $this->hasFailures && $this->hasOnePassingTest;
 	}
 
 	public function runSuite( Suite $suite ) {
-		if ( $suite->getDeepTestCount() < 1 ) {
+		if ( $suite->getDeepTestCount( $this->grep ) < 1 ) {
 			return;
 		}
 		$this->emit( 'suite-start', $suite );
 		if ( isset( $suite->before ) ) {
 			( $suite->before )( $suite->context );
 		}
-		array_map( [ $this, 'runTest' ], $suite->getTests() );
+		array_map( [ $this, 'runTest' ], $suite->getTests( $this->grep ) );
 		array_map( [ $this, 'runSuite' ], $suite->getSuites() );
 		if ( isset( $suite->after ) ) {
 			( $suite->after )( $suite->context );

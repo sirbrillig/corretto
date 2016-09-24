@@ -14,7 +14,6 @@ class Suite extends Emitter {
 	public $before;
 	public $after;
 	public $context;
-	public $grep;
 
 	public function __construct( string $name = '', callable $callable = null ) {
 		$this->name = $name;
@@ -24,20 +23,19 @@ class Suite extends Emitter {
 
 	public function addSuite( Suite $suite ) {
 		$suite->parent = $this;
-		$suite->grep = $this->grep;
 		$this->suites[] = $suite;
 	}
 
 	public function addTest( Test $test ) {
 		$test->parent = $this;
-		if ( $this->grep && ! preg_match( '/' . $this->grep . '/', $test->getFullName() ) ) {
-			return;
-		}
 		$this->tests[] = $test;
 	}
 
-	public function getTests() {
-		return $this->tests;
+	public function getTests( $matching = null ) {
+		$doesTestMatch = function( $test ) use ( &$matching ) {
+			return $test->doesTestMatch( $matching );
+		};
+		return array_filter( $this->tests, $doesTestMatch );
 	}
 
 	public function getSuites() {
@@ -65,14 +63,14 @@ class Suite extends Emitter {
 		$this->emit( 'suite-prepare-end', $this );
 	}
 
-	public function getTestCount() {
-		return count( $this->tests );
+	public function getTestCount( $matching = null ) {
+		return count( $this->getTests( $matching ) );
 	}
 
-	public function getDeepTestCount() {
-		$count = $this->getTestCount();
-		$addToCount = function( $suite ) use ( &$count ) {
-			$count += $suite->getDeepTestCount();
+	public function getDeepTestCount( $matching = null ) {
+		$count = $this->getTestCount( $matching );
+		$addToCount = function( $suite ) use ( &$count, &$matching ) {
+			$count += $suite->getDeepTestCount( $matching );
 		};
 		array_map( $addToCount, $this->getSuites() );
 		return $count;

@@ -25,6 +25,10 @@ class Test {
 		return $this->name;
 	}
 
+	public function doesTestMatch( $matching = null ) {
+		return ( ! $matching || preg_match( '/' . $matching . '/', $this->getFullName() ) );
+	}
+
 	public function getTest() {
 		return $this->callable;
 	}
