@@ -55,9 +55,7 @@ class Suite extends Emitter {
 		if ( ! $this->callable ) {
 			return;
 		}
-		$this->emit( 'suite-prepare-start', $this );
 		( $this->callable )( $this );
-		$this->emit( 'suite-prepare-end', $this );
 	}
 
 	public function getTestCount( $matching = null ) {

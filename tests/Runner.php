@@ -5,15 +5,15 @@ use \Corretto\{Suite, Test, Runner};
 use \Spies\Spy;
 
 describe( 'Runner', function() {
-	describe( 'addTest()', function() {
+	describe( 'addTestToCurrentSuite()', function() {
 		it( 'adds a test to the current suite', function() {
 			$spy1 = new Spy();
 			$runner = new Runner();
 			$suite = new Suite( 'first', function() use ( &$runner, &$spy1 ) {
 				$test1 = new Test( 'one', $spy1 );
-				$runner->addTest( $test1 );
+				$runner->addTestToCurrentSuite( $test1 );
 			} );
-			$runner->addSuite( $suite );
+			$runner->addSuiteToCurrentSuite( $suite );
 			$runner->run();
 			assertTrue( $spy1->was_called() );
 		} );
@@ -22,13 +22,13 @@ describe( 'Runner', function() {
 			$spy1 = new Spy();
 			$test1 = new Test( 'one', $spy1 );
 			$runner = new Runner();
-			$runner->addTest( $test1 );
+			$runner->addTestToCurrentSuite( $test1 );
 			$runner->run();
 			assertTrue( $spy1->was_called() );
 		} );
 	} );
 
-	describe( 'addSuite()', function() {
+	describe( 'addSuiteToCurrentSuite()', function() {
 		it( 'adds all tests in the suite', function() {
 			$added = 0;
 			$suite = new Suite( 'first', function() use ( &$suite, &$added ) {
@@ -49,7 +49,7 @@ describe( 'Runner', function() {
 				$suite->addSuite( $suite2 );
 			} );
 			$runner = new Runner();
-			$runner->addSuite( $suite );
+			$runner->addSuiteToCurrentSuite( $suite );
 			assertTrue( $added === 3 );
 		} );
 
@@ -67,7 +67,7 @@ describe( 'Runner', function() {
 			} );
 			$runner = new Runner();
 			$runner->grep = 'matching';
-			$runner->addSuite( $suite );
+			$runner->addSuiteToCurrentSuite( $suite );
 			$runner->run();
 			assertTrue( $testSpy1->was_called() );
 			assertTrue( $testSpy3->was_called() );
@@ -314,8 +314,8 @@ describe( 'Runner', function() {
 				$suite->addTest( $test2 );
 			} );
 			$runner = new Runner();
-			$runner->addSuite( $suite1 );
-			$runner->addSuite( $suite2 );
+			$runner->addSuiteToCurrentSuite( $suite1 );
+			$runner->addSuiteToCurrentSuite( $suite2 );
 			$runner->run();
 			assertTrue( $testSpy1->was_called() && $testSpy2->was_called() );
 		} );
@@ -332,8 +332,8 @@ describe( 'Runner', function() {
 				$suite->addTest( $test2 );
 			} );
 			$runner = new Runner();
-			$runner->addSuite( $suite1 );
-			$runner->addSuite( $suite2 );
+			$runner->addSuiteToCurrentSuite( $suite1 );
+			$runner->addSuiteToCurrentSuite( $suite2 );
 			assertTrue( $runner->run() );
 		} );
 
@@ -350,8 +350,8 @@ describe( 'Runner', function() {
 				$suite->addTest( $test2 );
 			} );
 			$runner = new Runner();
-			$runner->addSuite( $suite1 );
-			$runner->addSuite( $suite2 );
+			$runner->addSuiteToCurrentSuite( $suite1 );
+			$runner->addSuiteToCurrentSuite( $suite2 );
 			assertFalse( $runner->run() );
 		} );
 
@@ -360,8 +360,8 @@ describe( 'Runner', function() {
 			$suite1 = new Suite( 'when bar1', function() {} );
 			$suite2 = new Suite( 'when bar2', function() {} );
 			$runner = new Runner();
-			$runner->addSuite( $suite1 );
-			$runner->addSuite( $suite2 );
+			$runner->addSuiteToCurrentSuite( $suite1 );
+			$runner->addSuiteToCurrentSuite( $suite2 );
 			assertFalse( $runner->run() );
 		} );
 
@@ -383,7 +383,7 @@ describe( 'Runner', function() {
 			$eventSpy = new Spy();
 			$runner->on( 'suite-start', $eventSpy );
 			$runner->grep = 'matching';
-			$runner->addSuite( $suite );
+			$runner->addSuiteToCurrentSuite( $suite );
 			$runner->run();
 			assertTrue( ! $eventSpy->was_called() );
 		} );
@@ -399,7 +399,7 @@ describe( 'Runner', function() {
 			$runner->on( 'tests-end', function() use ( &$suiteEnd ) {
 				$suiteEnd();
 			} );
-			$runner->addSuite( $suite );
+			$runner->addSuiteToCurrentSuite( $suite );
 			$runner->run();
 			assertTrue( $testSpy->was_called_before( $suiteEnd ) );
 		} );

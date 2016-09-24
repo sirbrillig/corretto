@@ -9,22 +9,25 @@ class Runner extends Suite {
 	public $grep;
 	public $colorEnabled = false;
 
-	public function addTest( Test $test ) {
+	public function addTestToCurrentSuite( Test $test ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
 		if ( ! $currentlyPreparingSuite ) {
-			return parent::addTest( $test );
+			return $this->addTest( $test );
 		}
 		$currentlyPreparingSuite->addTest( $test );
 	}
 
-	public function addSuite( Suite $suite ) {
-		$suite->on( 'suite-prepare-start', [ $this, 'setCurrentlyPreparingSuite' ] );
-		$suite->on( 'suite-prepare-end', [ $this, 'endCurrentlyPreparingSuite' ] );
+	public function addSuiteToCurrentSuite( Suite $suite ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
 		if ( ! $currentlyPreparingSuite ) {
-			return parent::addSuite( $suite );
+			$this->setCurrentlyPreparingSuite( $suite );
+			$this->addSuite( $suite );
+			$this->endCurrentlyPreparingSuite();
+			return;
 		}
+		$this->setCurrentlyPreparingSuite( $suite );
 		$currentlyPreparingSuite->addSuite( $suite );
+		$this->endCurrentlyPreparingSuite();
 	}
 
 	protected function setCurrentlyPreparingSuite( Suite $suite ) {

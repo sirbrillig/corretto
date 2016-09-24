@@ -18,7 +18,7 @@ function describe( string $name, $callable = null, $maybeCallable = null ) {
 	}
 	$suite = new Suite( $name, $callable );
 	$suite->skip = $skip;
-	$runner->addSuite( $suite );
+	$runner->addSuiteToCurrentSuite( $suite );
 }
 
 function context( string $name, $callable = null ) {
@@ -44,7 +44,7 @@ function it( string $name, $callable = null ) {
 		$callable = null;
 	}
 	$test = new Test( $name, $callable );
-	$runner->addTest( $test );
+	$runner->addTestToCurrentSuite( $test );
 }
 
 function color( string $message, string $type ) {
