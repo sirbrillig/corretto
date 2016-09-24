@@ -1,7 +1,8 @@
 <?php
 namespace Corretto;
 
-class Runner extends Suite {
+class Runner extends Emitter {
+	private $root;
 	private $currentlyPreparingSuites = [];
 	private $hasFailures = false;
 	private $hasOnePassingTest = false;
@@ -9,10 +10,15 @@ class Runner extends Suite {
 	public $grep;
 	public $colorEnabled = false;
 
+	public function __construct() {
+		$this->root = new Suite();
+		$this->setCurrentlyPreparingSuite( $this->root );
+	}
+
 	public function addTestToCurrentSuite( Test $test ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
 		if ( ! $currentlyPreparingSuite ) {
-			return $this->addTest( $test );
+			throw new \Exception( 'Tests must be added to a suite' );
 		}
 		$currentlyPreparingSuite->addTest( $test );
 	}
@@ -20,10 +26,7 @@ class Runner extends Suite {
 	public function addSuiteToCurrentSuite( Suite $suite ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
 		if ( ! $currentlyPreparingSuite ) {
-			$this->setCurrentlyPreparingSuite( $suite );
-			$this->addSuite( $suite );
-			$this->endCurrentlyPreparingSuite();
-			return;
+			throw new \Exception( 'Suites must be added to a suite' );
 		}
 		$this->setCurrentlyPreparingSuite( $suite );
 		$currentlyPreparingSuite->addSuite( $suite );
@@ -43,8 +46,7 @@ class Runner extends Suite {
 	}
 
 	public function run() {
-		array_map( [ $this, 'runTest' ], $this->getTests( $this->grep ) );
-		array_map( [ $this, 'runSuite' ], $this->getSuites() );
+		$this->runSuite( $this->root );
 		$this->emit( 'tests-end' );
 		return ! $this->hasFailures && $this->hasOnePassingTest;
 	}
