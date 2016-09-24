@@ -3,6 +3,10 @@
 use function \Corretto\{describe, it, assert};
 use const \Corretto\SKIP;
 
+it( 'allows tests outside a suite', function() {
+	assert( true );
+} );
+
 describe( 'describe', function() {
 	describe( 'when nested', function() {
 		it( 'skips tests with no function' );

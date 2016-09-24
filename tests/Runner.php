@@ -1,10 +1,33 @@
 <?php
 
-use function \Corretto\{describe, it, assert};
+use function \Corretto\{describe, it, assertTrue, assertFalse};
 use \Corretto\{Suite, Test, Runner};
 use \Spies\Spy;
 
 describe( 'Runner', function() {
+	describe( 'addTest()', function() {
+		it( 'adds a test to the current suite', function() {
+			$spy1 = new Spy();
+			$runner = new Runner();
+			$suite = new Suite( 'first', function() use ( &$runner, &$spy1 ) {
+				$test1 = new Test( 'one', $spy1 );
+				$runner->addTest( $test1 );
+			} );
+			$runner->addSuite( $suite );
+			$runner->run();
+			assertTrue( $spy1->was_called() );
+		} );
+
+		it( 'adds a test to the default suite if not inside a suite', function() {
+			$spy1 = new Spy();
+			$test1 = new Test( 'one', $spy1 );
+			$runner = new Runner();
+			$runner->addTest( $test1 );
+			$runner->run();
+			assertTrue( $spy1->was_called() );
+		} );
+	} );
+
 	describe( 'addSuite()', function() {
 		it( 'adds all tests in the suite', function() {
 			$added = 0;
@@ -21,7 +44,7 @@ describe( 'Runner', function() {
 			} );
 			$runner = new Runner();
 			$runner->addSuite( $suite );
-			assert( $added === 2 );
+			assertTrue( $added === 2 );
 		} );
 
 		it( 'adds only tests matching "grep" if it is set', function() {
@@ -40,9 +63,9 @@ describe( 'Runner', function() {
 			$runner->grep = 'matching';
 			$runner->addSuite( $suite );
 			$runner->run();
-			assert( $testSpy1->was_called() );
-			assert( $testSpy3->was_called() );
-			assert( ! $testSpy2->was_called() );
+			assertTrue( $testSpy1->was_called() );
+			assertTrue( $testSpy3->was_called() );
+			assertTrue( ! $testSpy2->was_called() );
 		} );
 	} );
 
@@ -54,7 +77,7 @@ describe( 'Runner', function() {
 			} );
 			$runner = new Runner();
 			$runner->runTest( $test );
-			assert( $ran );
+			assertTrue( $ran );
 		} );
 
 		it( 'does not throw an Exception if the test function throws an Exception', function() {
@@ -79,14 +102,14 @@ describe( 'Runner', function() {
 				$ran = true;
 			} );
 			$runner->runTest( $test );
-			assert( $ran );
+			assertTrue( $ran );
 		} );
 
 		it( 'does not add an Exception to the test if the test function does not throw an Exception', function() {
 			$test = new Test( 'foo', function() {} );
 			$runner = new Runner();
 			$runner->runTest( $test );
-			assert( ! $test->getException() );
+			assertTrue( ! $test->getException() );
 		} );
 
 		it( 'adds the Exception to the test if the test function throws an Exception', function() {
@@ -95,7 +118,7 @@ describe( 'Runner', function() {
 			} );
 			$runner = new Runner();
 			$runner->runTest( $test );
-			assert( $test->getException() );
+			assertTrue( $test->getException() );
 		} );
 
 		it( 'passes the test if the test function does not throw an Exception', function() {
@@ -106,7 +129,7 @@ describe( 'Runner', function() {
 				$ran = true;
 			} );
 			$runner->runTest( $test );
-			assert( $ran );
+			assertTrue( $ran );
 		} );
 
 		it( 'skips a test if the test is missing a function', function() {
@@ -117,7 +140,7 @@ describe( 'Runner', function() {
 				$skipped = true;
 			} );
 			$runner->runTest( $test );
-			assert( $skipped );
+			assertTrue( $skipped );
 		} );
 
 		it( 'skips a test if the test is marked skipped', function() {
@@ -132,8 +155,8 @@ describe( 'Runner', function() {
 				$skipped = true;
 			} );
 			$runner->runTest( $test );
-			assert( $skipped );
-			assert( ! $ran );
+			assertTrue( $skipped );
+			assertTrue( ! $ran );
 		} );
 	} );
 
@@ -148,8 +171,8 @@ describe( 'Runner', function() {
 			$suite->addTest( $test2 );
 			$runner = new Runner();
 			$runner->runSuite( $suite );
-			assert( $testSpy1->was_called() );
-			assert( $testSpy2->was_called() );
+			assertTrue( $testSpy1->was_called() );
+			assertTrue( $testSpy2->was_called() );
 		} );
 
 		it( 'emits suite-start event when suite begins', function() {
@@ -161,7 +184,7 @@ describe( 'Runner', function() {
 			$runner = new Runner();
 			$runner->on( 'suite-start', $eventSpy );
 			$runner->runSuite( $suite );
-			assert( $eventSpy->was_called_before( $testSpy1 ) );
+			assertTrue( $eventSpy->was_called_before( $testSpy1 ) );
 		} );
 
 		it( 'skips all the tests in a suite if the suite is marked skip', function() {
@@ -174,8 +197,8 @@ describe( 'Runner', function() {
 			$suite->addTest( $test );
 			$suite->skip = true;
 			$runner->runSuite( $suite );
-			assert( $skipSpy->was_called() );
-			assert( ! $testSpy1->was_called() );
+			assertTrue( $skipSpy->was_called() );
+			assertTrue( ! $testSpy1->was_called() );
 		} );
 
 		it( 'calls any "beforeEach" function on the suite before each test', function() {
@@ -193,10 +216,10 @@ describe( 'Runner', function() {
 			};
 			$runner = new Runner();
 			$runner->runSuite( $suite );
-			assert( $testSpy1->was_called_when( function( $args ) {
+			assertTrue( $testSpy1->was_called_when( function( $args ) {
 				return $args[0]->foo === 1;
 			} ) );
-			assert( $testSpy2->was_called_when( function( $args ) {
+			assertTrue( $testSpy2->was_called_when( function( $args ) {
 				return $args[0]->foo === 2;
 			} ) );
 		} );
@@ -216,10 +239,10 @@ describe( 'Runner', function() {
 			};
 			$runner = new Runner();
 			$runner->runSuite( $suite );
-			assert( $testSpy1->was_called_when( function( $args ) {
+			assertTrue( $testSpy1->was_called_when( function( $args ) {
 				return ( ! isset( $args[0]->foo ) );
 			} ) );
-			assert( $testSpy2->was_called_when( function( $args ) {
+			assertTrue( $testSpy2->was_called_when( function( $args ) {
 				return $args[0]->foo === 1;
 			} ) );
 		} );
@@ -239,10 +262,10 @@ describe( 'Runner', function() {
 			};
 			$runner = new Runner();
 			$runner->runSuite( $suite );
-			assert( $testSpy1->was_called_when( function( $args ) {
+			assertTrue( $testSpy1->was_called_when( function( $args ) {
 				return $args[0]->foo === 1;
 			} ) );
-			assert( $testSpy2->was_called_when( function( $args ) {
+			assertTrue( $testSpy2->was_called_when( function( $args ) {
 				return $args[0]->foo === 1;
 			} ) );
 		} );
@@ -262,13 +285,13 @@ describe( 'Runner', function() {
 			};
 			$runner = new Runner();
 			$runner->runSuite( $suite );
-			assert( $testSpy1->was_called_when( function( $args ) {
+			assertTrue( $testSpy1->was_called_when( function( $args ) {
 				return ( ! isset( $args[0]->foo ) );
 			} ) );
-			assert( $testSpy2->was_called_when( function( $args ) {
+			assertTrue( $testSpy2->was_called_when( function( $args ) {
 				return ( ! isset( $args[0]->foo ) );
 			} ) );
-			assert( $val === 1 );
+			assertTrue( $val === 1 );
 		} );
 	} );
 
@@ -288,7 +311,52 @@ describe( 'Runner', function() {
 			$runner->addSuite( $suite1 );
 			$runner->addSuite( $suite2 );
 			$runner->run();
-			assert( $testSpy1->was_called() && $testSpy2->was_called() );
+			assertTrue( $testSpy1->was_called() && $testSpy2->was_called() );
+		} );
+
+		it( 'returns true if at least one test ran and no tests failed', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$test1 = new Test( 'foo', $testSpy1 );
+			$test2 = new Test( 'foo', $testSpy2 );
+			$suite1 = new Suite( 'when bar1', function( $suite ) use ( &$test1 ) {
+				$suite->addTest( $test1 );
+			} );
+			$suite2 = new Suite( 'when bar2', function( $suite ) use ( &$test2 ) {
+				$suite->addTest( $test2 );
+			} );
+			$runner = new Runner();
+			$runner->addSuite( $suite1 );
+			$runner->addSuite( $suite2 );
+			assertTrue( $runner->run() );
+		} );
+
+		it( 'returns false if at least one test ran and one test failed', function() {
+			$testSpy1 = new Spy();
+			$test1 = new Test( 'foo', $testSpy1 );
+			$test2 = new Test( 'foo', function() {
+				throw new Exception( 'test fails' );
+			} );
+			$suite1 = new Suite( 'when bar1', function( $suite ) use ( &$test1 ) {
+				$suite->addTest( $test1 );
+			} );
+			$suite2 = new Suite( 'when bar2', function( $suite ) use ( &$test2 ) {
+				$suite->addTest( $test2 );
+			} );
+			$runner = new Runner();
+			$runner->addSuite( $suite1 );
+			$runner->addSuite( $suite2 );
+			assertFalse( $runner->run() );
+		} );
+
+
+		it( 'returns false if no tests ran', function() {
+			$suite1 = new Suite( 'when bar1', function() {} );
+			$suite2 = new Suite( 'when bar2', function() {} );
+			$runner = new Runner();
+			$runner->addSuite( $suite1 );
+			$runner->addSuite( $suite2 );
+			assertFalse( $runner->run() );
 		} );
 
 		it( 'does not trigger "suite-start" event for suites with no tests', function() {
@@ -311,7 +379,7 @@ describe( 'Runner', function() {
 			$runner->grep = 'matching';
 			$runner->addSuite( $suite );
 			$runner->run();
-			assert( ! $eventSpy->was_called() );
+			assertTrue( ! $eventSpy->was_called() );
 		} );
 
 		it( 'emits a tests-end event when all tests are complete', function() {
@@ -327,7 +395,7 @@ describe( 'Runner', function() {
 			} );
 			$runner->addSuite( $suite );
 			$runner->run();
-			assert( $testSpy->was_called_before( $suiteEnd ) );
+			assertTrue( $testSpy->was_called_before( $suiteEnd ) );
 		} );
 	} );
 } );

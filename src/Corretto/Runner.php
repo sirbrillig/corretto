@@ -3,8 +3,10 @@ namespace Corretto;
 
 class Runner extends Emitter {
 	private $suites = [];
+	private $tests = [];
 	private $currentlyPreparingSuites = [];
 	private $hasFailures = false;
+	private $hasOnePassingTest = false;
 
 	public $grep;
 	public $colorEnabled = false;
@@ -12,7 +14,11 @@ class Runner extends Emitter {
 	public function addTest( Test $test ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
 		if ( ! $currentlyPreparingSuite ) {
-			throw new \Exception( 'new tests must be part of a test suite' );
+			if ( $this->grep && ! preg_match( '/' . $this->grep . '/', $test->getFullName() ) ) {
+				return;
+			}
+			$this->tests[] = $test;
+			return;
 		}
 		$currentlyPreparingSuite->addTest( $test );
 	}
@@ -43,9 +49,10 @@ class Runner extends Emitter {
 	}
 
 	public function run() {
+		array_map( [ $this, 'runTest' ], $this->tests );
 		array_map( [ $this, 'runSuite' ], $this->suites );
 		$this->emit( 'tests-end' );
-		return ! $this->hasFailures;
+		return ! $this->hasFailures && $this->hasOnePassingTest;
 	}
 
 	public function runSuite( Suite $suite ) {
@@ -73,6 +80,7 @@ class Runner extends Emitter {
 			}
 		}
 		if ( $test->skip || ! $test->getTest() ) {
+			$this->hasOnePassingTest = true;
 			$this->emit( 'test-skip', $test );
 			return;
 		}
@@ -91,6 +99,7 @@ class Runner extends Emitter {
 			$this->emit( 'test-complete', $test );
 			return;
 		}
+		$this->hasOnePassingTest = true;
 		$this->emit( 'test-success', $test );
 		$this->emit( 'test-complete', $test );
 	}
