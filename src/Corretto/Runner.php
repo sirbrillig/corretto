@@ -21,11 +21,10 @@ class Runner extends Suite {
 		$suite->on( 'suite-prepare-start', [ $this, 'setCurrentlyPreparingSuite' ] );
 		$suite->on( 'suite-prepare-end', [ $this, 'endCurrentlyPreparingSuite' ] );
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
-		if ( $currentlyPreparingSuite ) {
-			$currentlyPreparingSuite->addSuite( $suite );
-			return;
+		if ( ! $currentlyPreparingSuite ) {
+			return parent::addSuite( $suite );
 		}
-		parent::addSuite( $suite );
+		$currentlyPreparingSuite->addSuite( $suite );
 	}
 
 	protected function setCurrentlyPreparingSuite( Suite $suite ) {
