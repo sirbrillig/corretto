@@ -23,5 +23,6 @@ class Expectation {
 	}
 
 	public function toNotEqual( $expected ) {
+		return assertNotEquals( $this->actual, $expected );
 	}
 }

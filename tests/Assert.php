@@ -132,7 +132,7 @@ describe( 'assertNotEquals()', function() {
 		try {
 			assertNotEquals( 1234, 1234 );
 		} catch ( Exception $e ) {
-			$expected = "Failed asserting that '1234' is not equal to '1234'";
+			$expected = "Failed asserting that 1234 is not equal to 1234";
 			if ( $e->getMessage() === $expected ) {
 				return;
 			}

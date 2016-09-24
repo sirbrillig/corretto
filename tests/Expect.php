@@ -92,7 +92,26 @@ describe( 'expect()', function() {
 			expect( 'bye' )->toNotEqual( 'hello' );
 		} );
 
-		it( 'fails if its argument equals the actual' );
-		it( 'fails with an expected string if the argument equals the actual' );
+		it( 'fails if its argument equals the actual', function() {
+			try {
+				expect( 'hi' )->toNotEqual( 'hi' );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toNotEqual() did not fail as expected' );
+		} );
+
+		it( 'fails with an expected string if the argument equals the actual', function() {
+			try {
+				expect( 'hi' )->toNotEqual( 'hi' );
+			} catch ( Exception $e ) {
+				$expected = "Failed asserting that 'hi' is not equal to 'hi'";
+				if ( $e->getMessage() === $expected ) {
+					return;
+				}
+				throw new Exception( 'toNotEqual() did not have the expected string. Instead it said: ' . $e->getMessage() );
+			}
+			throw new Exception( 'toNotEqual() did not fail as expected' );
+		} );
 	} );
 } );

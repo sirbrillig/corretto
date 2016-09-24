@@ -25,6 +25,6 @@ function assertEquals( $expected, $actual ) {
 
 function assertNotEquals( $expected, $actual ) {
 	if ( $expected === $actual ) {
-		throw new \Exception( "Failed asserting that '" . var_export( $expected, true ) . "' is not equal to '" . var_export( $actual, true ) . "'" );
+		throw new \Exception( "Failed asserting that " . var_export( $expected, true ) . " is not equal to " . var_export( $actual, true ) . "" );
 	}
 }
