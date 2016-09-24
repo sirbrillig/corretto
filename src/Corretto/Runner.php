@@ -10,8 +10,8 @@ class Runner extends Emitter {
 	public $grep;
 	public $colorEnabled = false;
 
-	public function __construct() {
-		$this->root = new Suite();
+	public function __construct( Suite $root = null ) {
+		$this->root = isset( $root ) ? $root : new Suite();
 		$this->setCurrentlyPreparingSuite( $this->root );
 	}
 
