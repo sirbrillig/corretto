@@ -12,7 +12,10 @@ class Spec extends Base {
 
 	public function startSuite( $suite ) {
 		$this->echoIndent();
-		echo $suite->getName() . "\n";
+		$name = $suite->getName();
+		if ( $name ) {
+			$this->output( $name . "\n" );
+		}
 		$this->suiteCount ++;
 	}
 
