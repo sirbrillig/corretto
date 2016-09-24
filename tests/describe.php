@@ -9,6 +9,11 @@ it( 'allows tests outside a suite', function() {
 
 describe( 'describe', function() {
 	describe( 'when nested', function() {
+		describe( 'more than once', function() {
+			it( 'passes if its argument is true', function() {
+				assert( true );
+			} );
+		} );
 		it( 'skips tests with no function' );
 		it( SKIP, 'skips tests with the SKIP constant as the first argument', function() {
 			assert( false );

@@ -39,12 +39,18 @@ describe( 'Runner', function() {
 					$test2 = new Test( 'two', function() {} );
 					$suite2->addTest( $test2 );
 					$added ++;
+					$suite3 = new Suite( 'third', function() use ( &$suite3, &$added ) {
+						$test3 = new Test( 'three', function() {} );
+						$suite3->addTest( $test3 );
+						$added ++;
+					} );
+					$suite2->addSuite( $suite3 );
 				} );
 				$suite->addSuite( $suite2 );
 			} );
 			$runner = new Runner();
 			$runner->addSuite( $suite );
-			assertTrue( $added === 2 );
+			assertTrue( $added === 3 );
 		} );
 
 		it( 'adds only tests matching "grep" if it is set', function() {
