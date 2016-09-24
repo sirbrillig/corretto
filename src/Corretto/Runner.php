@@ -12,11 +12,7 @@ class Runner extends Suite {
 	public function addTest( Test $test ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
 		if ( ! $currentlyPreparingSuite ) {
-			if ( $this->grep && ! preg_match( '/' . $this->grep . '/', $test->getFullName() ) ) {
-				return;
-			}
-			$this->tests[] = $test;
-			return;
+			return parent::addTest( $test );
 		}
 		$currentlyPreparingSuite->addTest( $test );
 	}
