@@ -79,23 +79,23 @@ $loadFiles = function( $files ) use ( &$loadFile ) {
 };
 
 // Start runner
-$root = new \Corretto\Runner();
+$runner = new \Corretto\Runner();
 if ( posix_isatty( STDOUT ) ) {
-	$root->colorEnabled = true;
+	$runner->colorEnabled = true;
 }
 if ( isset( $options['c'] ) || isset( $options['colors'] ) ) {
-	$root->colorEnabled = true;
+	$runner->colorEnabled = true;
 }
 if ( isset( $options['C'] ) || isset( $options['no-colors'] ) ) {
-	$root->colorEnabled = false;
+	$runner->colorEnabled = false;
 }
 if ( isset( $options['g'] ) ) {
-	$root->grep = $options['g'];
+	$runner->grep = $options['g'];
 }
 if ( isset( $options['grep'] ) ) {
-	$root->grep = $options['grep'];
+	$runner->grep = $options['grep'];
 }
-\Corretto\setRunner( $root );
+\Corretto\setRunner( $runner );
 if ( empty( $files ) && is_dir( 'tests' ) ) {
 	$files = [ 'tests' ];
 }
@@ -103,15 +103,15 @@ $loadFiles( $files );
 // TODO: can we make this dynamic?
 switch( $reporter ) {
 	case 'base':
-		new \Corretto\Reporters\Base( $root );
+		new \Corretto\Reporters\Base( $runner );
 		break;
 	case 'spec':
-		new \Corretto\Reporters\Spec( $root );
+		new \Corretto\Reporters\Spec( $runner );
 		break;
 	default:
 		throw new Exception( 'Unknown reporter: ' . $reporter );
 }
-$success = $root->run();
+$success = $runner->run();
 if ( ! $success ) {
 	exit( 1 );
 }
