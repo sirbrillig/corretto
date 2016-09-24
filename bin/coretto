@@ -109,7 +109,10 @@ switch( $reporter ) {
 		new \Corretto\Reporters\Spec( $root );
 		break;
 	default:
-		new \Corretto\Reporters\Spec( $root );
-		break;
+		throw new Exception( 'Unknown reporter: ' . $reporter );
 }
-$root->run();
+$success = $root->run();
+if ( ! $success ) {
+	exit( 1 );
+}
+exit( 0 );

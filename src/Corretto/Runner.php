@@ -4,9 +4,10 @@ namespace Corretto;
 class Runner extends Emitter {
 	private $suites = [];
 	private $currentlyPreparingSuites = [];
+	private $hasFailures = false;
 
 	public $grep;
-	public $colorEnabled;
+	public $colorEnabled = false;
 
 	public function addTest( Test $test ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
@@ -44,6 +45,7 @@ class Runner extends Emitter {
 	public function run() {
 		array_map( [ $this, 'runSuite' ], $this->suites );
 		$this->emit( 'tests-end' );
+		return ! $this->hasFailures;
 	}
 
 	public function runSuite( Suite $suite ) {
@@ -84,6 +86,7 @@ class Runner extends Emitter {
 			}
 		} catch ( \Exception $e ) {
 			$test->setException( $e );
+			$this->hasFailures = true;
 			$this->emit( 'test-failure', $test );
 			$this->emit( 'test-complete', $test );
 			return;
