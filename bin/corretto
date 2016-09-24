@@ -1,7 +1,6 @@
 #!/usr/bin/env php -q
 <?php
 
-// FIXME: two R's, two T's
 require( dirname( dirname( __FILE__ ) ) . '/vendor/autoload.php' );
 
 $usage = "USAGE: corretto [options] [files]
