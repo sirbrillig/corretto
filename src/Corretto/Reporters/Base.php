@@ -80,10 +80,17 @@ class Base {
 			array_map( function( $test ) use ( &$index ) {
 				$index ++;
 				$this->output( $index . '. ' . $test->getFullName() . ': ' );
-				$this->output( $test->getException()->getMessage() . "\n", 'FAIL' );
-				$trace = $test->getException()->getTrace()[0];
-				$traceLine = 'at ' . $trace['function'] . ' ('. $trace['file'] . ':' . $trace['line'] . ')';
+				$ex = $test->getException();
+				$this->output( $ex->getMessage() . "\n", 'FAIL' );
+				if ( $ex instanceof \Corretto\AssertionFailure ) {
+					$trace = $ex->getTrace()[0];
+					$traceLine = 'at ' . $trace['function'] . ' in '. $trace['file'] . ':' . $trace['line'];
+					$this->output( $traceLine . "\n\n", 'INFO' );
+					return;
+				}
+				$traceLine = 'in '. $ex->getFile() . ':' . $ex->getLine();
 				$this->output( $traceLine . "\n\n", 'INFO' );
+				$this->output( strval( $ex ). "\n\n", 'INFO' );
 			}, $this->failedTests );
 		}
 		$this->output( "\n" );

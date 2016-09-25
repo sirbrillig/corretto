@@ -11,7 +11,7 @@ class Expectation {
 	}
 
 	public function toBeTrue() {
-		return assert( $this->actual );
+		return assertTrue( $this->actual );
 	}
 
 	public function toBeFalse() {
