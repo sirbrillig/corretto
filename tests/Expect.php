@@ -131,6 +131,19 @@ describe( 'expect()', function() {
 			}
 			throw new Exception( 'toEqual() did not fail as expected' );
 		} );
+
+		it( 'fails with an expected string if the argument array does not equal the actual array', function() {
+			try {
+				expect( [ 2, 6, 8 ] )->toEqual( [ 1, 5, 9 ] );
+			} catch ( Exception $e ) {
+				$expected = "Failed asserting that array (\n  0 => 2,\n  1 => 6,\n  2 => 8,\n) is equal to array (\n  0 => 1,\n  1 => 5,\n  2 => 9,\n)";
+				if ( $e->getMessage() === $expected ) {
+					return;
+				}
+				throw new Exception( 'toEqual() did not have the expected string. Instead it said: ' . $e->getMessage() );
+			}
+			throw new Exception( 'toEqual() did not fail as expected' );
+		} );
 	} );
 
 	describe( 'toNotEqual()', function() {
