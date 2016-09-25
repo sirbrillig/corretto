@@ -60,13 +60,59 @@ describe( 'expect()', function() {
 	} );
 
 	describe( 'toEqual()', function() {
-		it( 'passes if its argument equals the actual', function() {
+		it( 'passes if its argument string equals the actual string', function() {
 			expect( 'hello' )->toEqual( 'hello' );
 		} );
 
-		it( 'fails if its argument does not equal the actual', function() {
+		it( 'passes if its argument integer equals the actual integer', function() {
+			expect( 123 )->toEqual( 123 );
+		} );
+
+		it( 'passes if its argument boolean equals the actual boolean', function() {
+			expect( true )->toEqual( true );
+		} );
+
+		it( 'passes if its argument array equals the actual array', function() {
+			expect( [ 1, 5, 9 ] )->toEqual( [ 1, 5, 9 ] );
+		} );
+
+		it( 'passes if its argument object equals the actual object', function() {
+			$obj = (object) [ 'hi' => 'there' ];
+			expect( $obj )->toEqual( $obj );
+		} );
+
+		it( 'fails if its argument string does not equal the actual string', function() {
 			try {
 				expect( 'hello' )->toEqual( 'hi' );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toEqual() did not fail as expected' );
+		} );
+
+		it( 'fails if its argument boolean does not equal the actual boolean', function() {
+			try {
+				expect( false )->toEqual( true );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toEqual() did not fail as expected' );
+		} );
+
+		it( 'fails if its argument array does not equal the actual array', function() {
+			try {
+				expect( [ 2, 6, 8 ] )->toEqual( [ 1, 5, 9 ] );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toEqual() did not fail as expected' );
+		} );
+
+		it( 'fails if its argument object does not equal the actual object', function() {
+			try {
+				$actual = (object) [ 'bye' => 'there' ];
+				$obj = (object) [ 'hi' => 'there' ];
+				expect( $actual )->toEqual( $obj );
 			} catch ( Exception $e ) {
 				return;
 			}
