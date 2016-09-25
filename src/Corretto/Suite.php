@@ -1,7 +1,7 @@
 <?php
 namespace Corretto;
 
-class Suite extends Emitter {
+class Suite {
 	protected $suites = [];
 	protected $tests = [];
 	protected $callable = null;
