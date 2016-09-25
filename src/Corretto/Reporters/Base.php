@@ -17,6 +17,7 @@ class Base {
 		$runner->on( 'test-failure', [ $this, 'addFail' ] );
 		$runner->on( 'test-complete', [ $this, 'addComplete' ] );
 
+		$runner->on( 'tests-start', [ $this, 'prologue' ] );
 		$runner->on( 'test-success', [ $this, 'success' ] );
 		$runner->on( 'test-skip', [ $this, 'skip' ] );
 		$runner->on( 'test-failure', [ $this, 'fail' ] );
@@ -62,6 +63,10 @@ class Base {
 
 	public function fail( $test ) {
 		$this->output( ' 𝗫 ' . $test->getFullName() . "\n", 'FAIL' );
+	}
+
+	public function prologue() {
+		$this->output( "\n" );
 	}
 
 	public function epilogue() {

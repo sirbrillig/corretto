@@ -67,6 +67,7 @@ class Runner extends Emitter {
 	}
 
 	public function run() {
+		$this->emit( 'tests-start' );
 		$this->runSuite( $this->root );
 		$this->emit( 'tests-end' );
 		return ! $this->hasFailures && $this->hasOnePassingTest;
