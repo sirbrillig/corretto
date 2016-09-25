@@ -68,33 +68,41 @@ class Runner extends Emitter {
 	}
 
 	public function runTest( Test $test ) {
-		$context = new \StdClass();
-		if ( $test->parent ) {
-			$context = $test->parent->context;
-			if ( $test->parent->skip ) {
-				$test->skip = true;
-			}
-		}
-		if ( $test->skip || ! $test->getTest() ) {
-			$this->hasOnePassingTest = true;
-			$this->emit( 'test-skip', $test );
-			return;
+		if ( $test->shouldSkip() ) {
+			return $this->skipTest( $test );
 		}
 		try {
-			if ( $test->parent && $test->parent->beforeEach ) {
-				( $test->parent->beforeEach )( $context );
-			}
-			( $test->getTest() )( $context );
-			if ( $test->parent && $test->parent->afterEach ) {
-				( $test->parent->afterEach )( $context );
-			}
+			$this->tryTest( $test );
 		} catch ( \Exception $e ) {
 			$test->setException( $e );
-			$this->hasFailures = true;
-			$this->emit( 'test-failure', $test );
-			$this->emit( 'test-complete', $test );
-			return;
+			return $this->failTest( $test );
 		}
+		$this->passTest( $test );
+	}
+
+	protected function tryTest( Test $test ) {
+		$context = $test->getContext();
+		if ( $test->parent && $test->parent->beforeEach ) {
+			( $test->parent->beforeEach )( $context );
+		}
+		( $test->getTest() )( $context );
+		if ( $test->parent && $test->parent->afterEach ) {
+			( $test->parent->afterEach )( $context );
+		}
+	}
+
+	protected function skipTest( Test $test ) {
+		$this->hasOnePassingTest = true;
+		$this->emit( 'test-skip', $test );
+	}
+
+	protected function failTest( Test $test ) {
+		$this->hasFailures = true;
+		$this->emit( 'test-failure', $test );
+		$this->emit( 'test-complete', $test );
+	}
+
+	protected function passTest( Test $test ) {
 		$this->hasOnePassingTest = true;
 		$this->emit( 'test-success', $test );
 		$this->emit( 'test-complete', $test );

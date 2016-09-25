@@ -40,5 +40,16 @@ class Test {
 	public function getException() {
 		return $this->exception;
 	}
+
+	public function shouldSkip() {
+		return $this->skip || ( $this->parent && $this->parent->skip ) || ! $this->getTest();
+	}
+
+	public function getContext() {
+		if ( $this->parent ) {
+			return $this->parent->context;
+		}
+		return new \StdClass();
+	}
 }
 
