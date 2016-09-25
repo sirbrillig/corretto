@@ -14,7 +14,7 @@ class Spec extends Base {
 		$this->echoIndent();
 		$name = $suite->getName();
 		if ( $name ) {
-			$this->output( $name . "\n" );
+			$this->output( $name . PHP_EOL );
 		}
 		$this->suiteCount ++;
 	}
@@ -26,17 +26,17 @@ class Spec extends Base {
 	public function success( $test ) {
 		$this->echoIndent();
 		$this->output( ' ✓ ', 'OK' );
-		$this->output( $test->getName() . "\n", 'INFO' );
+		$this->output( $test->getName() . PHP_EOL, 'INFO' );
 	}
 
 	public function skip( $test ) {
 		$this->echoIndent();
-		$this->output( ' ~ ' . $test->getName() . "\n", 'WARN' );
+		$this->output( ' ~ ' . $test->getName() . PHP_EOL, 'WARN' );
 	}
 
 	public function fail( $test ) {
 		$this->echoIndent();
-		$this->output( ' 𝗫 ' . $test->getName() . "\n", 'FAIL' );
+		$this->output( ' 𝗫 ' . $test->getName() . PHP_EOL, 'FAIL' );
 	}
 
 	protected function echoIndent() {

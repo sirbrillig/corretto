@@ -54,41 +54,41 @@ class Base {
 
 	public function success( $test ) {
 		$this->output( ' ✓ ', 'OK' );
-		$this->output( $test->getFullName() . "\n", 'INFO' );
+		$this->output( $test->getFullName() . PHP_EOL, 'INFO' );
 	}
 
 	public function skip( $test ) {
-		$this->output( ' ~ ' . $test->getFullName() . "\n", 'WARN' );
+		$this->output( ' ~ ' . $test->getFullName() . PHP_EOL, 'WARN' );
 	}
 
 	public function fail( $test ) {
-		$this->output( ' 𝗫 ' . $test->getFullName() . "\n", 'FAIL' );
+		$this->output( ' 𝗫 ' . $test->getFullName() . PHP_EOL, 'FAIL' );
 	}
 
 	public function prologue() {
-		$this->output( "\n" );
+		$this->output( PHP_EOL );
 	}
 
 	public function epilogue() {
 		$failureCount = count( $this->failedTests );
 		$skipCount = count( $this->skippedTests );
 		$successCount = count( $this->successTests );
-		$this->output( "\n" );
+		$this->output( PHP_EOL );
 		if ( $skipCount < 1 && $failureCount < 1 && $successCount < 1 ) {
-			$this->output( "no tests were run!\n", 'FAIL' );
+			$this->output( "no tests were run!" . PHP_EOL, 'FAIL' );
 			return;
 		}
 		if ( $skipCount > 0 ) {
-			$this->output( "$skipCount tests skipped\n", 'WARN' );
+			$this->output( "$skipCount tests skipped" . PHP_EOL, 'WARN' );
 		}
 		if ( $successCount > 0 ) {
-			$this->output( "$successCount tests passed\n", 'OK' );
+			$this->output( "$successCount tests passed" . PHP_EOL, 'OK' );
 		}
 		if ( $failureCount > 0 ) {
-			$this->output( "$failureCount tests failed:\n\n", 'FAIL' );
+			$this->output( "$failureCount tests failed:" . PHP_EOL . PHP_EOL, 'FAIL' );
 			$this->outputFailures();
 		}
-		$this->output( "\n" );
+		$this->output( PHP_EOL );
 	}
 
 	protected function outputFailures() {
@@ -97,16 +97,16 @@ class Base {
 			$index ++;
 			$this->output( $index . '. ' . $test->getFullName() . ': ' );
 			$ex = $test->getException();
-			$this->output( $ex->getMessage() . "\n", 'FAIL' );
+			$this->output( $ex->getMessage() . PHP_EOL, 'FAIL' );
 			if ( $ex instanceof \Corretto\AssertionFailure ) {
 				$trace = $ex->getTrace()[0];
 				$traceLine = 'at ' . $trace['function'] . ' in '. $trace['file'] . ':' . $trace['line'];
-				$this->output( $traceLine . "\n\n", 'INFO' );
+				$this->output( $traceLine . PHP_EOL . PHP_EOL, 'INFO' );
 				return;
 			}
 			$traceLine = 'in '. $ex->getFile() . ':' . $ex->getLine();
-			$this->output( $traceLine . "\n\n", 'INFO' );
-			$this->output( strval( $ex ). "\n\n", 'INFO' );
+			$this->output( $traceLine . PHP_EOL . PHP_EOL, 'INFO' );
+			$this->output( strval( $ex ). PHP_EOL . PHP_EOL, 'INFO' );
 		}, $this->failedTests );
 	}
 }

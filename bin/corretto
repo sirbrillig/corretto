@@ -11,7 +11,7 @@ Options:
  -C, --no-colors		Force disabling colorized output
  -R, --reporter <name>		Set a reporter to use (default 'spec')
  --reporters			List available reporters
-\n";
+" . PHP_EOL;
 
 $options = getopt( 'hR:g:cC', [ 'help', 'reporter:', 'reporters', 'grep:', 'colors', 'no-colors' ] );
 
@@ -42,10 +42,10 @@ if ( count( $files ) < 1 && ! is_dir( 'tests' ) ) {
 }
 
 if ( isset( $options['reporters'] ) ) {
-	echo "Available reporters:\n";
+	echo "Available reporters:" . PHP_EOL;
 	$reporters = [ 'base', 'spec', 'dots' ];
 	array_map( function( $reporter ) {
-		echo $reporter . "\n";
+		echo $reporter . PHP_EOL;
 	}, $reporters );
 	exit;
 }
