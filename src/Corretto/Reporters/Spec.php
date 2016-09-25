@@ -25,7 +25,8 @@ class Spec extends Base {
 
 	public function success( $test ) {
 		$this->echoIndent();
-		$this->output( ' √ ' . $test->getName() . "\n", 'OK' );
+		$this->output( ' ✓ ', 'OK' );
+		$this->output( $test->getName() . "\n", 'INFO' );
 	}
 
 	public function skip( $test ) {
@@ -37,7 +38,7 @@ class Spec extends Base {
 	public function fail( $test ) {
 		$this->failedTests[] = $test;
 		$this->echoIndent();
-		$this->output( ' X ' . $test->getName() . "\n", 'FAIL' );
+		$this->output( ' 𝗫 ' . $test->getName() . "\n", 'FAIL' );
 	}
 
 	protected function echoIndent() {

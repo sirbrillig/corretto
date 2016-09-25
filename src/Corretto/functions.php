@@ -59,6 +59,9 @@ function color( string $message, string $type ) {
 	case 'WARN':
 		$key = '[33m';
 		break;
+	case 'INFO':
+		$key = '[38;2;127;127;127m';
+		break;
 	default:
 		return $message;
 	}

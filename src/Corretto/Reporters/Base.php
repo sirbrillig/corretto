@@ -65,9 +65,10 @@ class Base {
 		array_map( function( $test ) use ( &$index ) {
 			$index ++;
 			$this->output( $index . '. ' . $test->getFullName() . ': ' );
-			$this->output( $test->getException()->getMessage() . "\n\n", 'FAIL' );
-			// TODO: can we get a stack trace that excludes the internals of Corretto?
-			$this->output( strval( $test->getException() ) . "\n\n" );
+			$this->output( $test->getException()->getMessage() . "\n", 'FAIL' );
+			$trace = $test->getException()->getTrace()[0];
+			$traceLine = 'at ' . $trace['function'] . ' ('. $trace['file'] . ':' . $trace['line'] . ')';
+			$this->output( $traceLine . "\n\n", 'INFO' );
 		}, $this->failedTests );
 	}
 }
