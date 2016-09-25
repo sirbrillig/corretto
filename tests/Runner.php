@@ -5,6 +5,46 @@ use \Corretto\{Suite, Test, Runner};
 use \Spies\Spy;
 
 describe( 'Runner', function() {
+	describe( 'createAndAddTest()', function() {
+		it( 'adds a new Test to the current suite', function() {
+			$spy1 = new Spy();
+			$runner = new Runner();
+			$runner->createAndAddTest( 'hello', $spy1 );
+			$runner->run();
+			assertTrue( $spy1->was_called() );
+		} );
+
+		it( 'adds a skipped Test if the first argument is "SKIP"', function() {
+			$spy1 = new Spy();
+			$runner = new Runner();
+			$runner->createAndAddTest( 'SKIP', 'hello', $spy1 );
+			$runner->run();
+			assertFalse( $spy1->was_called() );
+		} );
+	} );
+
+	describe( 'createAndAddSuite()', function() {
+		it( 'adds a new Suite to the current suite', function() {
+			$spy1 = new Spy();
+			$runner = new Runner();
+			$runner->createAndAddSuite( 'hello suite', function( $suite ) use ( &$spy1 ) {
+				$suite->addTest( new Test( 'inner test', $spy1 ) );
+			} );
+			$runner->run();
+			assertTrue( $spy1->was_called() );
+		} );
+
+		it( 'adds a skipped Suite if the first argument is "SKIP"', function() {
+			$spy1 = new Spy();
+			$runner = new Runner();
+			$runner->createAndAddSuite( 'SKIP', 'hello suite', function( $suite ) use ( &$spy1 ) {
+				$suite->addTest( new Test( 'inner test', $spy1 ) );
+			} );
+			$runner->run();
+			assertFalse( $spy1->was_called() );
+		} );
+	} );
+
 	describe( 'addTestToCurrentSuite()', function() {
 		it( 'adds a test to the current suite', function() {
 			$spy1 = new Spy();

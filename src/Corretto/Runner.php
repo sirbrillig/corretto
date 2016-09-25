@@ -15,6 +15,27 @@ class Runner extends Emitter {
 		$this->setCurrentlyPreparingSuite( $this->root );
 	}
 
+	public function createAndAddTest( string $name, $callable = null ) {
+		if ( $name === 'SKIP' ) {
+			$name = $callable;
+			$callable = null;
+		}
+		$test = new Test( $name, $callable );
+		$this->addTestToCurrentSuite( $test );
+	}
+
+	public function createAndAddSuite( string $name, $callable = null, $maybeCallable = null ) {
+		$skip = false;
+		if ( $name === 'SKIP' ) {
+			$name = $callable;
+			$callable = $maybeCallable;
+			$skip = true;
+		}
+		$suite = new Suite( $name, $callable );
+		$suite->skip = $skip;
+		$this->addSuiteToCurrentSuite( $suite );
+	}
+
 	public function addTestToCurrentSuite( Test $test ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
 		if ( ! $currentlyPreparingSuite ) {

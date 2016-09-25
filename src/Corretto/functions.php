@@ -10,15 +10,7 @@ function setRunner( $suite ) {
 
 function describe( string $name, $callable = null, $maybeCallable = null ) {
 	global $runner;
-	$skip = false;
-	if ( $name === 'SKIP' ) {
-		$name = $callable;
-		$callable = $maybeCallable;
-		$skip = true;
-	}
-	$suite = new Suite( $name, $callable );
-	$suite->skip = $skip;
-	$runner->addSuiteToCurrentSuite( $suite );
+	$runner->createAndAddSuite( $name, $callable, $maybeCallable );
 }
 
 function context( string $name, $callable = null ) {
@@ -39,12 +31,7 @@ function test( string $name, $callable = null ) {
 
 function it( string $name, $callable = null ) {
 	global $runner;
-	if ( $name === 'SKIP' ) {
-		$name = $callable;
-		$callable = null;
-	}
-	$test = new Test( $name, $callable );
-	$runner->addTestToCurrentSuite( $test );
+	$runner->createAndAddTest( $name, $callable );
 }
 
 function color( string $message, string $type ) {
