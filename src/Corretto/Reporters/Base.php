@@ -30,45 +30,62 @@ class Base {
 		$this->testCount ++;
 	}
 
-	public function success( $test ) {
+	public function addSuccess( $test ) {
 		$this->successTests[] = $test;
-		$this->output( ' √ ' . $test->getFullName() . "\n", 'OK' );
+	}
+
+	public function addSkip( $test ) {
+		$this->skippedTests[] = $test;
+	}
+
+	public function addFail( $test ) {
+		$this->failedTests[] = $test;
+	}
+
+
+	public function success( $test ) {
+		$this->addSuccess( $test );
+		$this->output( ' ✓ ', 'OK' );
+		$this->output( $test->getFullName() . "\n", 'INFO' );
 	}
 
 	public function skip( $test ) {
-		$this->skippedTests[] = $test;
+		$this->addSkip( $test );
 		$this->output( ' ~ ' . $test->getFullName() . "\n", 'WARN' );
 	}
 
 	public function fail( $test ) {
-		$this->failedTests[] = $test;
-		$this->output( ' X ' . $test->getFullName() . "\n", 'FAIL' );
+		$this->addFail( $test );
+		$this->output( ' 𝗫 ' . $test->getFullName() . "\n", 'FAIL' );
 	}
 
 	public function epilogue() {
 		$failureCount = count( $this->failedTests );
 		$skipCount = count( $this->skippedTests );
 		$successCount = count( $this->successTests );
-		if ( $skipCount > 0 ) {
-			$this->output( "\n$skipCount tests skipped", 'WARN' );
-		}
+		$this->output( "\n" );
 		if ( $skipCount < 1 && $failureCount < 1 && $successCount < 1 ) {
-			$this->output( "\nno tests were run!\n", 'FAIL' );
+			$this->output( "no tests were run!\n", 'FAIL' );
 			return;
 		}
-		if ( $failureCount < 1 ) {
-			$this->output( "\n$this->testCount tests passed\n", 'OK' );
-			return;
+		if ( $skipCount > 0 ) {
+			$this->output( "$skipCount tests skipped\n", 'WARN' );
 		}
-		$this->output( "\n$failureCount of $this->testCount tests failed:\n\n", 'FAIL' );
-		$index = 0;
-		array_map( function( $test ) use ( &$index ) {
-			$index ++;
-			$this->output( $index . '. ' . $test->getFullName() . ': ' );
-			$this->output( $test->getException()->getMessage() . "\n", 'FAIL' );
-			$trace = $test->getException()->getTrace()[0];
-			$traceLine = 'at ' . $trace['function'] . ' ('. $trace['file'] . ':' . $trace['line'] . ')';
-			$this->output( $traceLine . "\n\n", 'INFO' );
-		}, $this->failedTests );
+		if ( $successCount > 0 ) {
+			$this->output( "$successCount tests passed\n", 'OK' );
+		}
+		if ( $failureCount > 0 ) {
+			$this->output( "$failureCount tests failed:\n\n", 'FAIL' );
+			$index = 0;
+			array_map( function( $test ) use ( &$index ) {
+				$index ++;
+				$this->output( $index . '. ' . $test->getFullName() . ': ' );
+				$this->output( $test->getException()->getMessage() . "\n", 'FAIL' );
+				$trace = $test->getException()->getTrace()[0];
+				$traceLine = 'at ' . $trace['function'] . ' ('. $trace['file'] . ':' . $trace['line'] . ')';
+				$this->output( $traceLine . "\n\n", 'INFO' );
+			}, $this->failedTests );
+		}
+		$this->output( "\n" );
 	}
 }

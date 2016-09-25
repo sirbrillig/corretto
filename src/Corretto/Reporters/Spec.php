@@ -24,19 +24,20 @@ class Spec extends Base {
 	}
 
 	public function success( $test ) {
+		$this->addSuccess( $test );
 		$this->echoIndent();
 		$this->output( ' ✓ ', 'OK' );
 		$this->output( $test->getName() . "\n", 'INFO' );
 	}
 
 	public function skip( $test ) {
-		$this->skippedTests[] = $test;
+		$this->addSkip( $test );
 		$this->echoIndent();
 		$this->output( ' ~ ' . $test->getName() . "\n", 'WARN' );
 	}
 
 	public function fail( $test ) {
-		$this->failedTests[] = $test;
+		$this->addFail( $test );
 		$this->echoIndent();
 		$this->output( ' 𝗫 ' . $test->getName() . "\n", 'FAIL' );
 	}
