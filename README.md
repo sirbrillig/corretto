@@ -1,6 +1,8 @@
-**Corretto** is a simple, fast PHP test runner.
+## Corretto
 
-Modeled after [mocha](https://mochajs.org/), Corretto provides a DSL (domain-specific language) that makes writing tests easy and fast. After all, wouldn't you rather spend most of your effort writing your code rather than writing your tests?
+**Corretto** is a simple and expressive PHP test runner.
+
+Modeled after [mocha](https://mochajs.org/), Corretto provides a DSL (domain-specific language) that makes writing tests easy. No need for classes and long function names; just say what your code does in plain words. After all, wouldn't you rather spend most of your time working on code rather than writing tests?
 
 ```php
 <?php
@@ -19,11 +21,69 @@ describe( 'isFive()', function() {
 
 <img src="./examples/is-five.png">
 
-## Custom Assertions
+## Assertions
+
+Corretto has built-in support for the following assertions: `assertTrue()`, `assertFalse()`, `assertEquals()`, `assertNotEquals()`.
+
+It also supports expect syntax: `expect( $actual )->toBeTrue()`, `expect( $actual )->toBeFalse()`, `expect( $actual )->toEqual( $expected )`, `expect( $actual )->toNotEqual( $expected )`.
 
 Writing custom assertions is easy too. Anything that throws an `Exception` counts as a test failure!
 
 (You can also throw `\Corretto\AssertionFailure` which will provide slightly less noisy failures.)
+
+## Tests
+
+A test is defined by the function `it( string $name, callable $callable )`. This function is also aliased as `test( string $name, callable $callable )` and `specify( string $name, callable $callable )`.
+
+The callable should be an anonymous function that contains at least one assertion.
+
+```php
+it( 'does something', function() {
+	...
+} );
+```
+
+You can skip a test by simply omitting its callable, like this:
+
+```php
+it( 'does something not yet defined' );
+```
+
+You can also skip a test by adding the string `SKIP` as its first argument:
+
+```php
+it( 'SKIP', 'does something we should not run', function() {
+	...
+} );
+```
+
+## Suites
+
+Tests can be organized into suites using a similar syntax to tests: `describe( string $name, callable $callable )`. This is also aliased as `suite( string $name, callable $callable )` and `context( string $name, callable $callable )`.
+
+```php
+describe( 'some tests to run', function() {
+	test( '...' );
+	test( '...' );
+	test( '...' );
+} );
+```
+
+There is a default "root" suite always defined, so tests can exist by themselves.
+
+You can skip all the tests in a suite by adding the string `SKIP` as its first argument:
+
+```php
+describe( 'SKIP', 'some tests not to run', function() {
+	...
+} );
+```
+
+## Runner
+
+The `corretto` command-line tool is used to execute the tests. It can be provided with a test file or a directory of test files. If no files are provided, it will default to looking for a directory called `tests` in the current directory.
+
+The tool has several output options called **Reporters** that can be changed using the `-R` or `--reporter` options. The default Reporter is `spec` but there is also `base`, which is simpler, and `dots` which is more like the default output of PHPUnit.
 
 ## Examples
 
