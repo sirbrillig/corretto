@@ -43,7 +43,7 @@ if ( count( $files ) < 1 && ! is_dir( 'tests' ) ) {
 
 if ( isset( $options['reporters'] ) ) {
 	echo "Available reporters:\n";
-	$reporters = [ 'base', 'spec' ];
+	$reporters = [ 'base', 'spec', 'dots' ];
 	array_map( function( $reporter ) {
 		echo $reporter . "\n";
 	}, $reporters );
@@ -104,6 +104,9 @@ $loadFiles( $files );
 switch( $reporter ) {
 	case 'base':
 		new \Corretto\Reporters\Base( $runner );
+		break;
+	case 'dots':
+		new \Corretto\Reporters\Dots( $runner );
 		break;
 	case 'spec':
 		new \Corretto\Reporters\Spec( $runner );
