@@ -36,7 +36,7 @@ class Expectation {
 			if ( is_object( $actual ) ) {
 				$actualString = print_r( $actual, true );
 			}
-			throw new AssertionFailure( "Failed asserting that " . $expectedString . " is equal to " . $actualString . "" );
+			throw new AssertionFailure( "Failed asserting that " . $actualString . " is equal to " . $expectedString . "" );
 		}
 	}
 
@@ -52,7 +52,7 @@ class Expectation {
 			if ( is_object( $actual ) ) {
 				$actualString = print_r( $actual, true );
 			}
-			throw new AssertionFailure( "Failed asserting that " . $expectedString . " is not equal to " . $actualString . "" );
+			throw new AssertionFailure( "Failed asserting that " . $actualString . " is not equal to " . $expectedString . "" );
 		}
 	}
 }
