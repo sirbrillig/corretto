@@ -44,6 +44,14 @@ class Runner extends Emitter {
 		$currentlyPreparingSuite->addTest( $test );
 	}
 
+	public function addBeforeEachToCurrentSuite( callable $callable ) {
+		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
+		if ( ! $currentlyPreparingSuite ) {
+			throw new \Exception( 'beforeEach must be added to a suite' );
+		}
+		$currentlyPreparingSuite->beforeEach = $callable;
+	}
+
 	public function addSuiteToCurrentSuite( Suite $suite ) {
 		$currentlyPreparingSuite = $this->getCurrentlyPreparingSuite();
 		if ( ! $currentlyPreparingSuite ) {
