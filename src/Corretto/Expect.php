@@ -11,18 +11,48 @@ class Expectation {
 	}
 
 	public function toBeTrue() {
-		return assertTrue( $this->actual );
+		$expression = $this->actual;
+		if ( ! $expression ) {
+			throw new AssertionFailure( "Failed asserting that '" . var_export( $expression, true ) . "' is true" );
+		}
 	}
 
 	public function toBeFalse() {
-		return assertFalse( $this->actual );
+		$expression = $this->actual;
+		if ( $expression ) {
+			throw new AssertionFailure( "Failed asserting that '" . var_export( $expression, true ) . "' is false" );
+		}
 	}
 
 	public function toEqual( $expected ) {
-		return assertEquals( $this->actual, $expected );
+		$actual = $this->actual;
+		if ( $expected !== $actual ) {
+			$expectedString = var_export( $expected, true );
+			$actualString = var_export( $actual, true );
+			// print_r() gives a more readable version of objects
+			if ( is_object( $expected ) ) {
+				$expectedString = print_r( $expected, true );
+			}
+			if ( is_object( $actual ) ) {
+				$actualString = print_r( $actual, true );
+			}
+			throw new AssertionFailure( "Failed asserting that " . $expectedString . " is equal to " . $actualString . "" );
+		}
 	}
 
 	public function toNotEqual( $expected ) {
-		return assertNotEquals( $this->actual, $expected );
+		$actual = $this->actual;
+		if ( $expected === $actual ) {
+			$expectedString = var_export( $expected, true );
+			$actualString = var_export( $actual, true );
+			// print_r() gives a more readable version of objects
+			if ( is_object( $expected ) ) {
+				$expectedString = print_r( $expected, true );
+			}
+			if ( is_object( $actual ) ) {
+				$actualString = print_r( $actual, true );
+			}
+			throw new AssertionFailure( "Failed asserting that " . $expectedString . " is not equal to " . $actualString . "" );
+		}
 	}
 }
