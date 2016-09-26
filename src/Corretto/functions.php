@@ -34,6 +34,16 @@ function it( string $name, $callable = null ) {
 	$runner->createAndAddTest( $name, $callable );
 }
 
+function beforeEach( callable $callable ) {
+	global $runner;
+	$runner->addBeforeEachToCurrentSuite( $callable );
+}
+
+function afterEach( callable $callable ) {
+	global $runner;
+	$runner->addAfterEachToCurrentSuite( $callable );
+}
+
 function color( string $message, string $type ) {
 	$key = "";
 	switch( $type ) {
