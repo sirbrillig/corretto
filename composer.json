@@ -1,6 +1,6 @@
 {
     "name": "sirbrillig/corretto",
-    "description": "A simple PHP test runner",
+    "description": "A simple and expressive PHP test runner",
     "type": "library",
     "keywords": ["phpunit", "testing", "unittests", "bdd", "tdd"],
     "homepage": "https://github.com/sirbrillig/corretto",
