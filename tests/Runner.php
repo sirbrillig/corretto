@@ -62,6 +62,23 @@ describe( 'Runner', function() {
 		} );
 	} );
 
+	describe( 'addAfterEachToCurrentSuite()', function() {
+		it( 'adds the callable to afterEach on the current suite', function() {
+			$spy1 = new Spy();
+			$spy2 = new Spy();
+			$runner = new Runner();
+			$suite = new Suite( 'first', function() use ( &$runner, &$spy1, &$spy2 ) {
+				$test1 = new Test( 'one', $spy1 );
+				$runner->addTestToCurrentSuite( $test1 );
+				$runner->addAfterEachToCurrentSuite( $spy2 );
+			} );
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $spy2->was_called() );
+			assertTrue( $spy1->was_called_before( $spy2 ) );
+		} );
+	} );
+
 	describe( 'addTestToCurrentSuite()', function() {
 		it( 'adds a test to the current suite', function() {
 			$spy1 = new Spy();
