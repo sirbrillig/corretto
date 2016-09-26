@@ -21,6 +21,22 @@ describe( 'isFive()', function() {
 
 <img src="./examples/is-five.png">
 
+## Installing
+
+First you'll need [Composer](https://getcomposer.org/). Then, in your project:
+
+```
+composer require --dev sirbrillig/corretto
+```
+
+Or, to install globally:
+
+```
+composer global require sirbrillig/corretto
+```
+
+Just make sure your global vendor binaries directory is in your `$PATH`. See [the docs on global installs](https://getcomposer.org/doc/03-cli.md#global) for more info.
+
 ## Assertions
 
 Corretto has built-in support for the following assertions: `assertTrue()`, `assertFalse()`, `assertEquals()`, `assertNotEquals()`.
