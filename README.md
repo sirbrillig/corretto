@@ -117,26 +117,25 @@ describe( 'SKIP', 'some tests not to run', function() {
 } );
 ```
 
-## Before, After, and Suite Context
+## Before, After
 
 Suites can each have a `before( callable $callable )` which will be called before all the tests are run in that suite. Similarly `after( callable $callable )` will be run after all the tests have complete.
 
-Perhaps more useful is `beforeEach( callable $callable )` and `afterEach( callable $callable )` which run their callables before/after each test in the suite. These can bse used to set up data that is shared between each test.
-
-Each of these callables gets one argument, `$context`, which is an object that the callable can use to pass data to each of the tests. Each test also receives this argument.
+There is also `beforeEach( callable $callable )` and `afterEach( callable $callable )` which run their callables before/after each test in the suite. These can bse used to set up and restore data that is shared between each test.
 
 ```php
 describe( 'MyObject', function() {
-	describe( 'getName()', function() {
-		beforeEach( function( $ctx ) {
+	$ctx = new \StdClass();
+	describe( 'getName()', function() use ( &$ctx ) {
+		beforeEach( function() use ( &$ctx ) {
 			$ctx->obj = new MyObject();
 		} );
 
-		it( 'returns a default name when the name is missing', function( $ctx ) {
+		it( 'returns a default name when the name is missing', function() use ( &$ctx ) {
 			expect( $ctx->obj->getName() )->toEqual( 'default' );
 		} );
 
-		it( 'returns the name', function( $ctx ) {
+		it( 'returns the name', function() use ( &$ctx ) {
 			$ctx->obj->name = 'name';
 			expect( $ctx->obj->getName() )->toEqual( 'name' );
 		} );

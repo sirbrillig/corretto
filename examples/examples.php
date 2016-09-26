@@ -106,32 +106,34 @@ suite( 'my tests', function() {
 } );
 
 describe( 'set up and tear down', function() {
-	describe( 'beforeEach()', function() {
-		beforeEach( function( $ctx ) {
+	$ctx = new \StdClass();
+
+	describe( 'beforeEach()', function() use ( &$ctx ) {
+		beforeEach( function() use ( &$ctx ) {
 			$ctx->name = 'hello';
 		} );
 
-		it( 'sets up the test context', function( $ctx ) {
+		it( 'sets up the test context', function() use ( &$ctx ) {
 			expect( $ctx->name )->toEqual( 'hello' );
 			$ctx->name = 'bye';
 		} );
 
-		it( 'runs again before each test', function( $ctx ) {
+		it( 'runs again before each test', function() use ( &$ctx ) {
 			expect( $ctx->name )->toNotEqual( 'bye' );
 		} );
 	} );
 
-	describe( 'before()', function() {
-		before( function( $ctx ) {
+	describe( 'before()', function() use ( &$ctx ) {
+		before( function() use ( &$ctx ) {
 			$ctx->name = 'hello';
 		} );
 
-		it( 'sets up the test context', function( $ctx ) {
+		it( 'sets up the test context', function() use ( &$ctx ) {
 			expect( $ctx->name )->toEqual( 'hello' );
 			$ctx->name = 'bye';
 		} );
 
-		it( 'runs only once before the suite runs', function( $ctx ) {
+		it( 'runs only once before the suite runs', function() use ( &$ctx ) {
 			expect( $ctx->name )->toEqual( 'bye' );
 		} );
 	} );
