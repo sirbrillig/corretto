@@ -34,6 +34,16 @@ function it( string $name, $callable = null ) {
 	$runner->createAndAddTest( $name, $callable );
 }
 
+function before( callable $callable ) {
+	global $runner;
+	$runner->addBeforeToCurrentSuite( $callable );
+}
+
+function after( callable $callable ) {
+	global $runner;
+	$runner->addAfterToCurrentSuite( $callable );
+}
+
 function beforeEach( callable $callable ) {
 	global $runner;
 	$runner->addBeforeEachToCurrentSuite( $callable );

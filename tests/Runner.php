@@ -45,6 +45,40 @@ describe( 'Runner', function() {
 		} );
 	} );
 
+	describe( 'addBeforeToCurrentSuite()', function() {
+		it( 'adds the callable to before on the current suite', function() {
+			$spy1 = new Spy();
+			$spy2 = new Spy();
+			$runner = new Runner();
+			$suite = new Suite( 'first', function() use ( &$runner, &$spy1, &$spy2 ) {
+				$test1 = new Test( 'one', $spy1 );
+				$runner->addTestToCurrentSuite( $test1 );
+				$runner->addBeforeToCurrentSuite( $spy2 );
+			} );
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $spy2->was_called_before( $spy1 ) );
+			assertTrue( $suite->before === $spy2 );
+		} );
+	} );
+
+	describe( 'addAfterToCurrentSuite()', function() {
+		it( 'adds the callable to after on the current suite', function() {
+			$spy1 = new Spy();
+			$spy2 = new Spy();
+			$runner = new Runner();
+			$suite = new Suite( 'first', function() use ( &$runner, &$spy1, &$spy2 ) {
+				$test1 = new Test( 'one', $spy1 );
+				$runner->addTestToCurrentSuite( $test1 );
+				$runner->addAfterToCurrentSuite( $spy2 );
+			} );
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $spy1->was_called_before( $spy2 ) );
+			assertTrue( $suite->after === $spy2 );
+		} );
+	} );
+
 	describe( 'addBeforeEachToCurrentSuite()', function() {
 		it( 'adds the callable to beforeEach on the current suite', function() {
 			$spy1 = new Spy();
@@ -57,8 +91,8 @@ describe( 'Runner', function() {
 			} );
 			$runner->addSuiteToCurrentSuite( $suite );
 			$runner->run();
-			assertTrue( $spy2->was_called() );
 			assertTrue( $spy2->was_called_before( $spy1 ) );
+			assertTrue( $suite->beforeEach === $spy2 );
 		} );
 	} );
 
