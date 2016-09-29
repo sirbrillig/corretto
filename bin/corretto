@@ -1,7 +1,13 @@
 #!/usr/bin/env php -q
 <?php
 
-require( dirname( dirname( __FILE__ ) ) . '/vendor/autoload.php' );
+$composer_vendor = dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/autoload.php';
+$corretto_vendor = dirname( dirname( __FILE__ ) ) . '/vendor/autoload.php';
+if ( file_exists( $composer_vendor ) ) {
+	require( $composer_vendor );
+} else {
+	require( $corretto_vendor );
+}
 
 $usage = "USAGE: corretto [options] [files]
 
