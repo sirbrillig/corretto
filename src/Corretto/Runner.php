@@ -31,6 +31,7 @@ class Runner extends Emitter {
 			$callable = $maybeCallable;
 			$skip = true;
 		}
+		debug( 'adding new suite', $name );
 		$suite = new Suite( $name, $callable );
 		$suite->skip = $skip;
 		$this->addSuiteToCurrentSuite( $suite );
@@ -41,6 +42,7 @@ class Runner extends Emitter {
 		if ( ! $currentlyPreparingSuite ) {
 			throw new \Exception( 'Tests must be added to a suite' );
 		}
+		debug( 'adding test to current suite', $currentlyPreparingSuite->getFullName(), $test->getName() );
 		$currentlyPreparingSuite->addTest( $test );
 	}
 
@@ -81,6 +83,7 @@ class Runner extends Emitter {
 		if ( ! $currentlyPreparingSuite ) {
 			throw new \Exception( 'Suites must be added to a suite' );
 		}
+		debug( 'adding test to current suite', $currentlyPreparingSuite->getFullName(), $suite->getName() );
 		$this->setCurrentlyPreparingSuite( $suite );
 		$currentlyPreparingSuite->addSuite( $suite );
 		$this->endCurrentlyPreparingSuite();
@@ -106,7 +109,9 @@ class Runner extends Emitter {
 	}
 
 	public function runSuite( Suite $suite ) {
+		debug( 'running suite', $suite->getFullName() );
 		if ( $suite->getDeepTestCount( $this->grep ) < 1 ) {
+			debug( 'no tests in suite', $suite->getFullName() );
 			return;
 		}
 		$this->emit( 'suite-start', $suite );
@@ -122,6 +127,7 @@ class Runner extends Emitter {
 	}
 
 	public function runTest( Test $test ) {
+		debug( 'running test', $test->getFullName() );
 		if ( $test->shouldSkip() ) {
 			return $this->skipTest( $test );
 		}

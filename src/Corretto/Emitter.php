@@ -12,6 +12,7 @@ class Emitter {
 	}
 
 	protected function emit( string $key, $data = null ) {
+		debug( 'emitting', $key );
 		if ( isset( $this->handlers[ $key ] ) ) {
 			array_map( function( $handler ) use ( $data ) {
 				$handler( $data );

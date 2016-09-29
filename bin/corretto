@@ -5,7 +5,8 @@ $composer_vendor = dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/auto
 $corretto_vendor = dirname( dirname( __FILE__ ) ) . '/vendor/autoload.php';
 if ( file_exists( $composer_vendor ) ) {
 	require( $composer_vendor );
-} else {
+}
+if ( file_exists( $corretto_vendor ) ) {
 	require( $corretto_vendor );
 }
 
@@ -17,9 +18,10 @@ Options:
  -C, --no-colors		Force disabling colorized output
  -R, --reporter <name>		Set a reporter to use (default 'spec')
  --reporters			List available reporters
+ --debug			Print lots of output
 " . PHP_EOL;
 
-$options = getopt( 'hR:g:cC', [ 'help', 'reporter:', 'reporters', 'grep:', 'colors', 'no-colors' ] );
+$options = getopt( 'hR:g:cC', [ 'help', 'reporter:', 'reporters', 'grep:', 'colors', 'no-colors', 'debug' ] );
 
 if ( isset( $options['help'] ) || isset( $options['h'] ) ) {
 	echo $usage;
@@ -39,10 +41,15 @@ function stripOptions( $argv, $options ) {
 	return $new;
 }
 
+if ( isset( $options['debug'] ) ) {
+	$isDebugMode = true;
+}
+
 array_shift( $argv );
 $files = stripOptions( $argv, $options );
 
 if ( count( $files ) < 1 && ! is_dir( 'tests' ) ) {
+	\Corretto\debug( 'no files to test' );
 	echo $usage;
 	die;
 }
@@ -65,10 +72,12 @@ if ( isset( $options['reporter'] ) ) {
 
 // Load test files
 $loadFile = function( $fileName ) use ( &$loadFiles ) {
-	if ( $fileName[0] === '.' ) {
-		return;
-	}
+	\Corretto\debug( 'loading file:', $fileName );
 	if ( is_dir( $fileName ) ) {
+		if ( $fileName[0] === '..' ) {
+			\Corretto\debug( 'ignoring directory starting with ..' );
+			return;
+		}
 		$addDirName = function( $file ) use ( &$fileName ) {
 			return $fileName . DIRECTORY_SEPARATOR . $file;
 		};
@@ -77,10 +86,12 @@ $loadFile = function( $fileName ) use ( &$loadFiles ) {
 		return;
 	}
 	if ( preg_match( '/\.php$/', $fileName ) ) {
-		include( $fileName );
+		require( $fileName );
 	}
+	\Corretto\debug( 'ignoring non-PHP file', $fileName );
 };
 $loadFiles = function( $files ) use ( &$loadFile ) {
+	\Corretto\debug( 'loading files:', $files );
 	array_map( $loadFile, $files );
 };
 

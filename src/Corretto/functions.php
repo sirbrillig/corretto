@@ -8,6 +8,21 @@ function setRunner( $suite ) {
 	$runner = $suite;
 }
 
+function debug() {
+	global $isDebugMode;
+	if ( ! isset( $isDebugMode ) ) {
+		return;
+	}
+	$args = array_map( function( $arg ) {
+		if ( is_string( $arg ) ) {
+			return $arg;
+		}
+		return var_export( $arg, true );
+	}, func_get_args() );
+	$message = implode( ' ', $args );
+	echo $message . PHP_EOL;
+}
+
 function describe( string $name, $callable = null, $maybeCallable = null ) {
 	global $runner;
 	$runner->createAndAddSuite( $name, $callable, $maybeCallable );
