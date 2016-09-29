@@ -8,6 +8,10 @@
         "php": ">=5.3.0"
     },
     "license": "MIT",
+    "bin": ["bin/corretto"],
+    "scripts": {
+        "test": ["corretto --colors"]
+    },
     "autoload": {
         "psr-0": {
             "Corretto": "src/"
