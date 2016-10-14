@@ -73,4 +73,18 @@ class Expectation {
 			throw new AssertionFailure( "Failed asserting that " . $actualString . " is less than " . $expectedString . "" );
 		}
 	}
+
+	public function toContain( $expected ) {
+		$actual = $this->actual;
+		if ( is_string( $actual ) && strpos( $actual, $expected ) === false ) {
+			$expectedString = var_export( $expected, true );
+			$actualString = var_export( $actual, true );
+			throw new AssertionFailure( "Failed asserting that " . $actualString . " contains " . $expectedString . "" );
+		}
+		if ( is_array( $actual ) && ! in_array( $expected, $actual ) ) {
+			$expectedString = var_export( $expected, true );
+			$actualString = var_export( $actual, true );
+			throw new AssertionFailure( "Failed asserting that " . $actualString . " contains " . $expectedString . "" );
+		}
+	}
 }
