@@ -1,25 +1,16 @@
 <?php
 
-use function \Corretto\describe;
-use function \Corretto\it;
+use function Corretto\describe, Corretto\it;
 
-use function \Corretto\assertTrue;
-use function \Corretto\assertFalse;
-use function \Corretto\assertEquals;
-use function \Corretto\assertNotEquals;
+use function Corretto\assertTrue, Corretto\assertFalse, Corretto\assertEquals, Corretto\assertNotEquals;
 
-use function \Corretto\test;
-use function \Corretto\suite;
+use function Corretto\test, Corretto\suite;
 
-use function \Corretto\specify;
-use function \Corretto\context;
+use function Corretto\specify, Corretto\context;
 
-use function \Corretto\beforeEach;
-use function \Corretto\afterEach;
-use function \Corretto\before;
-use function \Corretto\after;
+use function Corretto\beforeEach, Corretto\afterEach, Corretto\before, Corretto\after;
 
-use function \Corretto\expect;
+use function Corretto\expect;
 
 it( 'allows tests outside a suite', function() {
 	assertTrue( true );

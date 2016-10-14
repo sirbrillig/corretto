@@ -6,7 +6,7 @@ Modeled after [mocha](https://mochajs.org/), Corretto provides a DSL (domain-spe
 
 ```php
 <?php
-use function \Corretto\{describe, it, assertTrue, assertFalse};
+use function Corretto\describe, Corretto\it, Corretto\assertTrue, Corretto\assertFalse;
 
 describe( 'isFive()', function() {
 	it( 'returns true if its argument is five', function() {
@@ -207,12 +207,17 @@ The tool has several output options called **Reporters** that can be changed usi
 ```php
 <?php
 
-use function \Corretto\{describe, it};
-use function \Corretto\{test, suite};
-use function \Corretto\{context, specify};
-use function \Corretto\{assertTrue, assertFalse, assertEquals, assertNotEquals};
-use function \Corretto\{expect};
-use const \Corretto\SKIP;
+use function Corretto\describe, Corretto\it;
+
+use function Corretto\assertTrue, Corretto\assertFalse, Corretto\assertEquals, Corretto\assertNotEquals;
+
+use function Corretto\test, Corretto\suite;
+
+use function Corretto\specify, Corretto\context;
+
+use function Corretto\beforeEach, Corretto\afterEach, Corretto\before, Corretto\after;
+
+use function Corretto\expect;
 
 it( 'allows tests outside a suite', function() {
 	assertTrue( true );
@@ -234,7 +239,7 @@ describe( 'describe()', function() {
 			} );
 		} );
 		it( 'skips tests with no function' );
-		it( SKIP, 'skips tests with the SKIP constant as the first argument', function() {
+		it( 'SKIP', 'skips tests with the SKIP string as the first argument', function() {
 			assertTrue( false );
 		} );
 		it( 'passes if its argument is true', function() {
@@ -252,7 +257,7 @@ describe( 'describe()', function() {
 		} );
 	} );
 
-	describe( SKIP, 'allows skipping whole suites', function() {
+	describe( 'SKIP', 'allows skipping whole suites', function() {
 		it( 'passes if its argument is true', function() {
 			assertTrue( false );
 		} );
@@ -307,6 +312,72 @@ suite( 'my tests', function() {
 			test( '->toNotEqual()', function() {
 				expect( 'hi' )->toNotEqual( 'bye' );
 			} );
+		} );
+	} );
+} );
+
+describe( 'set up and tear down', function() {
+	$ctx = new \StdClass();
+
+	describe( 'beforeEach()', function() use ( &$ctx ) {
+		beforeEach( function() use ( &$ctx ) {
+			$ctx->name = 'hello';
+		} );
+
+		it( 'sets up the test context', function() use ( &$ctx ) {
+			expect( $ctx->name )->toEqual( 'hello' );
+			$ctx->name = 'bye';
+		} );
+
+		it( 'runs again before each test', function() use ( &$ctx ) {
+			expect( $ctx->name )->toNotEqual( 'bye' );
+		} );
+	} );
+
+	describe( 'before()', function() use ( &$ctx ) {
+		before( function() use ( &$ctx ) {
+			$ctx->name = 'hello';
+		} );
+
+		it( 'sets up the test context', function() use ( &$ctx ) {
+			expect( $ctx->name )->toEqual( 'hello' );
+			$ctx->name = 'bye';
+		} );
+
+		it( 'runs only once before the suite runs', function() use ( &$ctx ) {
+			expect( $ctx->name )->toEqual( 'bye' );
+		} );
+	} );
+
+	describe( 'afterEach()', function() {
+		$name = 'hello';
+		afterEach( function() use ( &$name ) {
+			$name = 'bye';
+		} );
+
+		it( 'is run after each test', function() use( &$name ) {
+			expect( $name )->toEqual( 'hello' );
+		} );
+
+		it( 'runs again after each test', function() use ( &$name ) {
+			expect( $name )->toEqual( 'bye' );
+		} );
+	} );
+
+	$name = 'hello';
+	describe( 'after()', function() use( &$name ) {
+		after( function() use ( &$name ) {
+			$name = 'bye';
+		} );
+
+		it( 'is run after all tests in a suite', function() use( &$name ) {
+			expect( $name )->toEqual( 'hello' );
+		} );
+	} );
+
+	describe( 'after() (continued)', function() use( &$name ) {
+		it( 'is run at the end of a suite', function() use ( &$name ) {
+			expect( $name )->toEqual( 'bye' );
 		} );
 	} );
 } );
