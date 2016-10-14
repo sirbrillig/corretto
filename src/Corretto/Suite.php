@@ -83,13 +83,13 @@ class Suite {
 			$this->parent->callBeforeEach();
 		}
 		if ( isset( $this->beforeEach ) ) {
-			( $this->beforeEach )( $this->getContext() );
+			call_user_func( $this->beforeEach, $this->getContext() );
 		}
 	}
 
 	public function callAfterEach() {
 		if ( isset( $this->afterEach ) ) {
-			( $this->afterEach )( $this->getContext() );
+			call_user_func( $this->afterEach, $this->getContext() );
 		}
 		if ( $this->parent ) {
 			$this->parent->callAfterEach();

@@ -116,12 +116,12 @@ class Runner extends Emitter {
 		}
 		$this->emit( 'suite-start', $suite );
 		if ( isset( $suite->before ) ) {
-			( $suite->before )( $suite->getContext() );
+			call_user_func( $suite->before, $suite->getContext() );
 		}
 		array_map( [ $this, 'runTest' ], $suite->getTests( $this->grep ) );
 		array_map( [ $this, 'runSuite' ], $suite->getSuites() );
 		if ( isset( $suite->after ) ) {
-			( $suite->after )( $suite->getContext() );
+			call_user_func( $suite->after, $suite->getContext() );
 		}
 		$this->emit( 'suite-end', $suite );
 	}
@@ -142,7 +142,8 @@ class Runner extends Emitter {
 
 	protected function tryTest( Test $test ) {
 		$test->callBeforeEach();
-		( $test->getTest() )( $test->getContext() );
+		$test_func = call_user_func( [ $test, 'getTest' ] );
+		call_user_func( $test_func, $test->getContext() );
 		$test->callAfterEach();
 	}
 
