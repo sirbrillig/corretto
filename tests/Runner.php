@@ -1,7 +1,12 @@
 <?php
 
-use function \Corretto\{describe, it, assertTrue, assertFalse};
-use \Corretto\{Suite, Test, Runner};
+use function \Corretto\describe;
+use function \Corretto\it;
+use function \Corretto\assertTrue;
+use function \Corretto\assertFalse;
+use \Corretto\Suite;
+use \Corretto\Test;
+use \Corretto\Runner;
 use \Spies\Spy;
 
 describe( 'Runner', function() {

@@ -15,7 +15,7 @@ class Suite {
 	public $before;
 	public $after;
 
-	public function __construct( string $name = '', callable $callable = null ) {
+	public function __construct( $name = '', callable $callable = null ) {
 		$this->name = $name;
 		$this->callable = $callable;
 		$this->context = new \StdClass();
@@ -62,7 +62,7 @@ class Suite {
 		if ( ! $this->callable ) {
 			return;
 		}
-		( $this->callable )( $this );
+		call_user_func( $this->callable, $this );
 	}
 
 	public function getTestCount( $matching = null ) {

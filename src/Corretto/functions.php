@@ -23,28 +23,28 @@ function debug() {
 	echo $message . PHP_EOL;
 }
 
-function describe( string $name, $callable = null, $maybeCallable = null ) {
+function describe( $name, $callable = null, $maybeCallable = null ) {
 	global $runner;
 	$runner->createAndAddSuite( $name, $callable, $maybeCallable );
 }
 
-function context( string $name, $callable = null ) {
+function context( $name, $callable = null ) {
 	describe( $name, $callable );
 }
 
-function suite( string $name, $callable = null ) {
+function suite( $name, $callable = null ) {
 	describe( $name, $callable );
 }
 
-function specify( string $name, $callable = null ) {
+function specify( $name, $callable = null ) {
 	it( $name, $callable );
 }
 
-function test( string $name, $callable = null ) {
+function test( $name, $callable = null ) {
 	it( $name, $callable );
 }
 
-function it( string $name, $callable = null ) {
+function it( $name, $callable = null ) {
 	global $runner;
 	$runner->createAndAddTest( $name, $callable );
 }
@@ -69,7 +69,7 @@ function afterEach( callable $callable ) {
 	$runner->addAfterEachToCurrentSuite( $callable );
 }
 
-function color( string $message, string $type ) {
+function color( $message, $type ) {
 	$key = "";
 	switch( $type ) {
 	case 'FAIL':

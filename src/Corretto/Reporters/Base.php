@@ -25,7 +25,7 @@ class Base {
 		$runner->on( 'tests-end', [ $this, 'epilogue' ] );
 	}
 
-	protected function output( string $message, string $type = '' ) {
+	protected function output( $message, $type = '' ) {
 		if ( ! $this->colorEnabled ) {
 			echo $message;
 			return;

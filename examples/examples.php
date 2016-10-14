@@ -1,12 +1,25 @@
 <?php
 
-use function \Corretto\{describe, it};
-use function \Corretto\{test, suite};
-use function \Corretto\{context, specify};
-use function \Corretto\{assertTrue, assertFalse, assertEquals, assertNotEquals};
-use function \Corretto\{beforeEach, afterEach, before, after};
-use function \Corretto\{expect};
-use const \Corretto\SKIP;
+use function \Corretto\describe;
+use function \Corretto\it;
+
+use function \Corretto\assertTrue;
+use function \Corretto\assertFalse;
+use function \Corretto\assertEquals;
+use function \Corretto\assertNotEquals;
+
+use function \Corretto\test;
+use function \Corretto\suite;
+
+use function \Corretto\specify;
+use function \Corretto\context;
+
+use function \Corretto\beforeEach;
+use function \Corretto\afterEach;
+use function \Corretto\before;
+use function \Corretto\after;
+
+use function \Corretto\expect;
 
 it( 'allows tests outside a suite', function() {
 	assertTrue( true );
@@ -28,7 +41,7 @@ describe( 'describe()', function() {
 			} );
 		} );
 		it( 'skips tests with no function' );
-		it( SKIP, 'skips tests with the SKIP constant as the first argument', function() {
+		it( 'SKIP', 'skips tests with the SKIP string as the first argument', function() {
 			assertTrue( false );
 		} );
 		it( 'passes if its argument is true', function() {
@@ -46,7 +59,7 @@ describe( 'describe()', function() {
 		} );
 	} );
 
-	describe( SKIP, 'allows skipping whole suites', function() {
+	describe( 'SKIP', 'allows skipping whole suites', function() {
 		it( 'passes if its argument is true', function() {
 			assertTrue( false );
 		} );

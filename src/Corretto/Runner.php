@@ -15,7 +15,7 @@ class Runner extends Emitter {
 		$this->setCurrentlyPreparingSuite( $this->root );
 	}
 
-	public function createAndAddTest( string $name, $callable = null ) {
+	public function createAndAddTest( $name, $callable = null ) {
 		if ( $name === 'SKIP' ) {
 			$name = $callable;
 			$callable = null;
@@ -24,7 +24,7 @@ class Runner extends Emitter {
 		$this->addTestToCurrentSuite( $test );
 	}
 
-	public function createAndAddSuite( string $name, $callable = null, $maybeCallable = null ) {
+	public function createAndAddSuite( $name, $callable = null, $maybeCallable = null ) {
 		$skip = false;
 		if ( $name === 'SKIP' ) {
 			$name = $callable;

@@ -10,7 +10,7 @@ class Test {
 	public $parent;
 	public $skip = false;
 
-	public function __construct( string $name, callable $callable = null ) {
+	public function __construct( $name, callable $callable = null ) {
 		$this->name = $name;
 		$this->callable = $callable;
 		$this->context = new \StdClass();

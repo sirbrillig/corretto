@@ -1,5 +1,9 @@
 <?php
-use function \Corretto\{describe, it, assertTrue, assertFalse};
+use function \Corretto\describe;
+use function \Corretto\it;
+
+use function \Corretto\assertTrue;
+use function \Corretto\assertFalse;
 
 function isFive( $in ) {
 	return $in === 5;

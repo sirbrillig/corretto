@@ -1,6 +1,8 @@
 <?php
 
-use function \Corretto\{describe, it, expect};
+use function \Corretto\describe;
+use function \Corretto\it;
+use function \Corretto\expect;
 
 describe( 'expect()', function() {
 	describe( 'toBeTrue()', function() {

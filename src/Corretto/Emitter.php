@@ -4,14 +4,14 @@ namespace Corretto;
 class Emitter {
 	private $handlers = [];
 
-	public function on( string $key, callable $handler ) {
+	public function on( $key, callable $handler ) {
 		if ( ! isset( $this->handlers[ $key ] ) ) {
 			$this->handlers[ $key ] = [];
 		}
 		$this->handlers[ $key ][] = $handler;
 	}
 
-	protected function emit( string $key, $data = null ) {
+	protected function emit( $key, $data = null ) {
 		debug( 'emitting', $key );
 		if ( isset( $this->handlers[ $key ] ) ) {
 			array_map( function( $handler ) use ( $data ) {

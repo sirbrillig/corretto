@@ -1,6 +1,11 @@
 <?php
 
-use function \Corretto\{describe, it, assertTrue, assertFalse, assertEquals, assertNotEquals};
+use function \Corretto\describe;
+use function \Corretto\it;
+use function \Corretto\assertTrue;
+use function \Corretto\assertFalse;
+use function \Corretto\assertEquals;
+use function \Corretto\assertNotEquals;
 
 describe( 'assertTrue()', function() {
 	it( 'passes if its argument is true', function() {
