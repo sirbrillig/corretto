@@ -578,6 +578,24 @@ describe( 'Runner', function() {
 			} ) );
 		} );
 
+		it( 'passes an object from suite afterEach to tests in that suite', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$runner = new Runner();
+			$suite = new Suite( 'parent', function() use ( &$testSpy1, &$testSpy2, &$runner ) {
+				$runner->addAfterEachToCurrentSuite( function( $obj ) {
+					$obj->name = 'bob';
+				} );
+				$runner->createAndAddTest( 'child', $testSpy1 );
+				$runner->createAndAddTest( 'child 2', $testSpy2 );
+			} );
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $testSpy2->was_called_when( function( $args ) {
+				return $args[0]->name === 'bob';
+			} ) );
+		} );
+
 		it( 'passes an object from suite before to tests in that suite', function() {
 			$testSpy1 = new Spy();
 			$runner = new Runner();
@@ -586,6 +604,22 @@ describe( 'Runner', function() {
 					$obj->name = 'bob';
 				} );
 				$runner->createAndAddTest( 'child', $testSpy1 );
+			} );
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $testSpy1->was_called_when( function( $args ) {
+				return $args[0]->name === 'bob';
+			} ) );
+		} );
+
+		it( 'passes an object from suite after to tests in that suite', function() {
+			$testSpy1 = new Spy();
+			$runner = new Runner();
+			$suite = new Suite( 'parent', function() use ( &$testSpy1, &$runner ) {
+				$runner->createAndAddTest( 'child', function( $obj ) {
+					$obj->name = 'bob';
+				} );
+				$runner->addAfterToCurrentSuite( $testSpy1 );
 			} );
 			$runner->addSuiteToCurrentSuite( $suite );
 			$runner->run();
@@ -612,6 +646,24 @@ describe( 'Runner', function() {
 			} ) );
 		} );
 
+		it( 'passes an object from suite after to tests within other suites in that suite', function() {
+			$testSpy1 = new Spy();
+			$runner = new Runner();
+			$suite = new Suite( 'parent', function() use ( &$testSpy1, &$runner ) {
+				$runner->addAfterToCurrentSuite( $testSpy1 );
+				$runner->createAndAddSuite( 'child suite', function() use ( &$runner ) {
+					$runner->createAndAddTest( 'child', function( $obj ) {
+						$obj->name = 'bob';
+					} );
+				} );
+			} );
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $testSpy1->was_called_when( function( $args ) {
+				return $args[0]->name === 'bob';
+			} ) );
+		} );
+
 		it( 'passes an object from suite beforeEach to tests within other suites in that suite', function() {
 			$testSpy1 = new Spy();
 			$runner = new Runner();
@@ -621,6 +673,25 @@ describe( 'Runner', function() {
 				} );
 				$runner->createAndAddSuite( 'child suite', function() use ( &$testSpy1, &$runner ) {
 					$runner->createAndAddTest( 'child', $testSpy1 );
+				} );
+			} );
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $testSpy1->was_called_when( function( $args ) {
+				return $args[0]->name === 'bob';
+			} ) );
+		} );
+
+		it( 'passes an object from suite afterEach to tests within other suites in that suite', function() {
+			$testSpy1 = new Spy();
+			$runner = new Runner();
+			$suite = new Suite( 'parent', function() use ( &$testSpy1, &$runner ) {
+				$runner->addAfterEachToCurrentSuite( function( $obj ) {
+					$obj->name = 'bob';
+				} );
+				$runner->createAndAddSuite( 'child suite', function() use ( &$testSpy1, &$runner ) {
+					$runner->createAndAddTest( 'child', function() {} );
+					$runner->createAndAddTest( 'child two', $testSpy1 );
 				} );
 			} );
 			$runner->addSuiteToCurrentSuite( $suite );
