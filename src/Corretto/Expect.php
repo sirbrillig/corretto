@@ -26,6 +26,12 @@ class Expectation {
 
 	public function toEqual( $expected ) {
 		$actual = $this->actual;
+		if ( is_array( $actual ) ) {
+			sort( $actual );
+		}
+		if ( is_array( $expected ) ) {
+			sort( $expected );
+		}
 		if ( $expected !== $actual ) {
 			$expectedString = var_export( $expected, true );
 			$actualString = var_export( $actual, true );

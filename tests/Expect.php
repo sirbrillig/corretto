@@ -78,6 +78,10 @@ describe( 'expect()', function() {
 			expect( [ 1, 5, 9 ] )->toEqual( [ 1, 5, 9 ] );
 		} );
 
+		it( 'passes if its argument array equals the actual associative array regardless of order', function() {
+			expect( [ 'foo' => 'bar', 'bar' => 'baz' ] )->toEqual( [ 'bar' => 'baz', 'foo' => 'bar' ] );
+		} );
+
 		it( 'passes if its argument object equals the actual object', function() {
 			$obj = (object) [ 'hi' => 'there' ];
 			expect( $obj )->toEqual( $obj );
