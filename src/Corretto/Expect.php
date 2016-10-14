@@ -24,14 +24,27 @@ class Expectation {
 		}
 	}
 
+	private function recursiveAssocSort( $elements ) {
+		if ( ! is_array( $elements ) ) {
+			return $elements;
+		}
+		$elements = array_map( function( $el ) {
+			return $this->recursiveAssocSort( $el );
+		}, $elements );
+		if ( ! $this->hasStringKeys( $elements ) ) {
+			return $elements;
+		}
+		sort( $elements );
+		return $elements;
+	}
+
+	private function hasStringKeys( array $array ) {
+		return count( array_filter( array_keys( $array ), 'is_string' ) ) > 0;
+	}
+
 	public function toEqual( $expected ) {
-		$actual = $this->actual;
-		if ( is_array( $actual ) ) {
-			sort( $actual );
-		}
-		if ( is_array( $expected ) ) {
-			sort( $expected );
-		}
+		$actual = $this->recursiveAssocSort( $this->actual );
+		$expected = $this->recursiveAssocSort( $expected );
 		if ( $expected !== $actual ) {
 			$expectedString = var_export( $expected, true );
 			$actualString = var_export( $actual, true );

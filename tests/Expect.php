@@ -82,6 +82,10 @@ describe( 'expect()', function() {
 			expect( [ 'foo' => 'bar', 'bar' => 'baz' ] )->toEqual( [ 'bar' => 'baz', 'foo' => 'bar' ] );
 		} );
 
+		it( 'passes if its argument array deeply equals the actual associative array regardless of order', function() {
+			expect( [ [ 'foo' => 'bar', 'bar' => 'baz' ] ] )->toEqual( [ [ 'bar' => 'baz', 'foo' => 'bar' ] ] );
+		} );
+
 		it( 'passes if its argument object equals the actual object', function() {
 			$obj = (object) [ 'hi' => 'there' ];
 			expect( $obj )->toEqual( $obj );
@@ -108,6 +112,15 @@ describe( 'expect()', function() {
 		it( 'fails if its argument array does not equal the actual array', function() {
 			try {
 				expect( [ 2, 6, 8 ] )->toEqual( [ 1, 5, 9 ] );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toEqual() did not fail as expected' );
+		} );
+
+		it( 'fails if its argument array does not equal the actual array order', function() {
+			try {
+				expect( [ 5, 1, 9 ] )->toEqual( [ 1, 5, 9 ] );
 			} catch ( Exception $e ) {
 				return;
 			}
