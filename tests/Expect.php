@@ -175,4 +175,78 @@ describe( 'expect()', function() {
 			throw new Exception( 'toNotEqual() did not fail as expected' );
 		} );
 	} );
+
+	describe( 'toBeGreaterThan()', function() {
+		it( 'passes if the actual is greater than its argument', function() {
+			expect( 5 )->toBeGreaterThan( 3 );
+		} );
+
+		it( 'fails if the actual is less than its argument', function() {
+			try {
+				expect( 6 )->toBeGreaterThan( 8 );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toBeGreaterThan() did not fail as expected' );
+		} );
+
+		it( 'fails if its argument is equal to the actual', function() {
+			try {
+				expect( 6 )->toBeGreaterThan( 6 );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toBeGreaterThan() did not fail as expected' );
+		} );
+
+		it( 'fails with an expected string if the actual is less than the argument', function() {
+			try {
+				expect( 6 )->toBeGreaterThan( 8 );
+			} catch ( Exception $e ) {
+				$expected = "Failed asserting that 6 is greater than 8";
+				if ( $e->getMessage() === $expected ) {
+					return;
+				}
+				throw new Exception( 'toBeGreaterThan() did not have the expected string. Instead it said: ' . $e->getMessage() );
+			}
+			throw new Exception( 'toBeGreaterThan() did not fail as expected' );
+		} );
+	} );
+
+	describe( 'toBeLessThan()', function() {
+		it( 'passes if the actual is less than its argument', function() {
+			expect( 1 )->toBeLessThan( 3 );
+		} );
+
+		it( 'fails if the actual is greater than its argument', function() {
+			try {
+				expect( 10 )->toBeLessThan( 8 );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toBeLessThan() did not fail as expected' );
+		} );
+
+		it( 'fails if its argument is equal to the actual', function() {
+			try {
+				expect( 6 )->toBeLessThan( 6 );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toBeLessThan() did not fail as expected' );
+		} );
+
+		it( 'fails with an expected string if the actual is greater than the argument', function() {
+			try {
+				expect( 9 )->toBeLessThan( 8 );
+			} catch ( Exception $e ) {
+				$expected = "Failed asserting that 9 is less than 8";
+				if ( $e->getMessage() === $expected ) {
+					return;
+				}
+				throw new Exception( 'toBeLessThan() did not have the expected string. Instead it said: ' . $e->getMessage() );
+			}
+			throw new Exception( 'toBeLessThan() did not fail as expected' );
+		} );
+	} );
 } );
