@@ -121,11 +121,15 @@ describe( 'SKIP', 'some tests not to run', function() {
 
 Suites can each have a `before( callable $callable )` which will be called before all the tests are run in that suite. Similarly `after( callable $callable )` will be run after all the tests have complete.
 
-There is also `beforeEach( callable $callable )` and `afterEach( callable $callable )` which run their callables before/after each test in the suite. These can bse used to set up and restore data that is shared between each test.
+There is also `beforeEach( callable $callable )` and `afterEach( callable $callable )` which run their callables before/after each test in the suite (or any nested suite). These can be used to set up and restore data that is shared between each test.
 
 ```php
 describe( 'MyObject', function() {
 	$ctx = new \StdClass();
+	beforeEach( function() use ( &$ctx ) {
+		$ctx->color = 'blue';
+	} );
+
 	describe( 'getName()', function() use ( &$ctx ) {
 		beforeEach( function() use ( &$ctx ) {
 			$ctx->obj = new MyObject();
@@ -138,6 +142,41 @@ describe( 'MyObject', function() {
 		it( 'returns the name', function() use ( &$ctx ) {
 			$ctx->obj->name = 'name';
 			expect( $ctx->obj->getName() )->toEqual( 'name' );
+		} );
+
+		it( 'returns a name matching the color', function() use ( &$ctx ) {
+			$ctx->obj->name = $ctx->color;
+			expect( $ctx->obj->getName() )->toEqual( $ctx->color );
+		} );
+	} );
+} );
+```
+
+Passing variables to closures with the `use` expression in PHP is verbose, and it's likely that this pattern will be used frequently in tests. To make this easier, each test and each `beforeEach`/`afterEach`/`before`/`after` function receives a shared object that can be used to pass data between functions. Here is that same series of tests with the object used instead of closures.
+
+```php
+describe( 'MyObject', function() {
+	beforeEach( function( $ctx ) {
+		$ctx->color = 'blue';
+	} );
+
+	describe( 'getName()', function() {
+		beforeEach( function( $ctx ) {
+			$ctx->obj = new MyObject();
+		} );
+
+		it( 'returns a default name when the name is missing', function( $ctx ) {
+			expect( $ctx->obj->getName() )->toEqual( 'default' );
+		} );
+
+		it( 'returns the name', function( $ctx ) {
+			$ctx->obj->name = 'name';
+			expect( $ctx->obj->getName() )->toEqual( 'name' );
+		} );
+
+		it( 'returns a name matching the color', function( $ctx ) {
+			$ctx->obj->name = $ctx->color;
+			expect( $ctx->obj->getName() )->toEqual( $ctx->color );
 		} );
 	} );
 } );

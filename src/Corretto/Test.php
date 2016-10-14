@@ -5,6 +5,7 @@ class Test {
 	protected $name;
 	protected $callable;
 	protected $exception;
+	protected $context;
 
 	public $parent;
 	public $skip = false;
@@ -12,6 +13,7 @@ class Test {
 	public function __construct( string $name, callable $callable = null ) {
 		$this->name = $name;
 		$this->callable = $callable;
+		$this->context = new \StdClass();
 		if ( ! $this->callable ) {
 			$this->skip = true;
 		}
@@ -47,9 +49,21 @@ class Test {
 
 	public function getContext() {
 		if ( $this->parent ) {
-			return $this->parent->context;
+			return $this->parent->getContext();
 		}
-		return new \StdClass();
+		return $this->context;
+	}
+
+	public function callBeforeEach() {
+		if ( $this->parent ) {
+			$this->parent->callBeforeEach();
+		}
+	}
+
+	public function callAfterEach() {
+		if ( $this->parent ) {
+			$this->parent->callAfterEach();
+		}
 	}
 }
 

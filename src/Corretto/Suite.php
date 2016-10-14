@@ -6,6 +6,7 @@ class Suite {
 	protected $tests = [];
 	protected $callable = null;
 	protected $name = '';
+	protected $context;
 
 	public $parent;
 	public $skip;
@@ -13,12 +14,18 @@ class Suite {
 	public $afterEach;
 	public $before;
 	public $after;
-	public $context;
 
 	public function __construct( string $name = '', callable $callable = null ) {
 		$this->name = $name;
 		$this->callable = $callable;
 		$this->context = new \StdClass();
+	}
+
+	public function getContext() {
+		if ( $this->parent ) {
+			return $this->parent->getContext();
+		}
+		return $this->context;
 	}
 
 	public function addSuite( Suite $suite ) {
@@ -69,6 +76,24 @@ class Suite {
 		};
 		array_map( $addToCount, $this->getSuites() );
 		return $count;
+	}
+
+	public function callBeforeEach() {
+		if ( $this->parent ) {
+			$this->parent->callBeforeEach();
+		}
+		if ( isset( $this->beforeEach ) ) {
+			( $this->beforeEach )( $this->getContext() );
+		}
+	}
+
+	public function callAfterEach() {
+		if ( isset( $this->afterEach ) ) {
+			( $this->afterEach )( $this->getContext() );
+		}
+		if ( $this->parent ) {
+			$this->parent->callAfterEach();
+		}
 	}
 }
 
