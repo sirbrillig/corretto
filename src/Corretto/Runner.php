@@ -116,12 +116,12 @@ class Runner extends Emitter {
 		}
 		$this->emit( 'suite-start', $suite );
 		if ( isset( $suite->before ) ) {
-			( $suite->before )( $suite->context );
+			( $suite->before )( $suite->getContext() );
 		}
 		array_map( [ $this, 'runTest' ], $suite->getTests( $this->grep ) );
 		array_map( [ $this, 'runSuite' ], $suite->getSuites() );
 		if ( isset( $suite->after ) ) {
-			( $suite->after )( $suite->context );
+			( $suite->after )( $suite->getContext() );
 		}
 		$this->emit( 'suite-end', $suite );
 	}
@@ -141,14 +141,9 @@ class Runner extends Emitter {
 	}
 
 	protected function tryTest( Test $test ) {
-		$context = $test->getContext();
-		if ( $test->parent && $test->parent->beforeEach ) {
-			( $test->parent->beforeEach )( $context );
-		}
-		( $test->getTest() )( $context );
-		if ( $test->parent && $test->parent->afterEach ) {
-			( $test->parent->afterEach )( $context );
-		}
+		$test->callBeforeEach();
+		( $test->getTest() )( $test->getContext() );
+		$test->callAfterEach();
 	}
 
 	protected function skipTest( Test $test ) {
