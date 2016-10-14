@@ -54,6 +54,8 @@ It also supports expect syntax:
 - `expect( $actual )->toNotEqual( $expected )`
 - `expect( $actual )->toBeGreaterThan( $expected )`
 - `expect( $actual )->toBeLessThan( $expected )`
+- `expect( $actual )->toContain( $expected )`
+- `expect( $actual )->toNotContain( $expected )`
 
 Writing custom assertions is easy too. Anything that throws an `Exception` counts as a test failure!
 

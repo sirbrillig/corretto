@@ -290,4 +290,45 @@ describe( 'expect()', function() {
 			throw new Exception( 'toContain() did not fail as expected' );
 		} );
 	} );
+
+	describe( 'toNotContain()', function() {
+		it( 'passes if the actual string does not contain the expected string', function() {
+			expect( 'barbaz' )->toNotContain( 'foo' );
+		} );
+
+		it( 'fails if the actual string contains the expected string', function() {
+			try {
+				expect( 'helloworld' )->toNotContain( 'hello' );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toNotContain() did not fail as expected' );
+		} );
+
+		it( 'passes if the actual array does not contain the expected element', function() {
+			expect( [ 'bar', 'baz' ] )->toNotContain( 'foo' );
+		} );
+
+		it( 'fails if the actual array does contain the expected element', function() {
+			try {
+				expect( [ 'bar', 'hello' ] )->toNotContain( 'hello' );
+			} catch ( Exception $e ) {
+				return;
+			}
+			throw new Exception( 'toNotContain() did not fail as expected' );
+		} );
+
+		it( 'fails with an expected string if the actual does contain the expected', function() {
+			try {
+				expect( [ 'bar', 'hello' ] )->toNotContain( 'hello' );
+			} catch ( Exception $e ) {
+				$expected = "Failed asserting that array (\n  0 => 'bar',\n  1 => 'hello',\n) does not contain 'hello'";
+				if ( $e->getMessage() === $expected ) {
+					return;
+				}
+				throw new Exception( 'toNotContain() did not have the expected string. Instead it said: ' . $e->getMessage() );
+			}
+			throw new Exception( 'toNotContain() did not fail as expected' );
+		} );
+	} );
 } );
