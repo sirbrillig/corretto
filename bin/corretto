@@ -1,4 +1,4 @@
-#!/usr/bin/env php -q
+#!/usr/bin/env php
 <?php
 
 $composer_vendor = dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/autoload.php';
