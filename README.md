@@ -39,9 +39,21 @@ Just make sure your global vendor binaries directory is in your `$PATH`. See [th
 
 ## Assertions
 
-Corretto has built-in support for the following assertions: `assertTrue()`, `assertFalse()`, `assertEquals()`, `assertNotEquals()`.
+Corretto has built-in support for the following assertions:
 
-It also supports expect syntax: `expect( $actual )->toBeTrue()`, `expect( $actual )->toBeFalse()`, `expect( $actual )->toEqual( $expected )`, `expect( $actual )->toNotEqual( $expected )`.
+- `assertTrue()`
+- `assertFalse()`
+- `assertEquals()`
+- `assertNotEquals()`
+
+It also supports expect syntax:
+
+- `expect( $actual )->toBeTrue()`
+- `expect( $actual )->toBeFalse()`
+- `expect( $actual )->toEqual( $expected )`
+- `expect( $actual )->toNotEqual( $expected )`
+- `expect( $actual )->toBeGreaterThan( $expected )`
+- `expect( $actual )->toBeLessThan( $expected )`
 
 Writing custom assertions is easy too. Anything that throws an `Exception` counts as a test failure!
 
