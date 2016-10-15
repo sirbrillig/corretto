@@ -32,8 +32,12 @@ class Test {
 		return $this->name;
 	}
 
-	public function doesTestMatch( $matching = null ) {
+	public function doesTestMatchPattern( $matching = null ) {
 		return ( ! $matching || preg_match( '/' . $matching . '/', $this->getFullName() ) );
+	}
+
+	public function doesTestMatchString( $matching = null ) {
+		return ( ! $matching || strpos( $this->getFullName(), $matching ) !== false );
 	}
 
 	public function getTest() {

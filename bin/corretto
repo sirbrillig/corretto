@@ -21,14 +21,15 @@ Options:
  -c, --colors			Force enabling colorized output
  -C, --no-colors		Force disabling colorized output
  -R, --reporter <name>		Set a reporter to use (default 'spec')
- -g, --grep <string>		Only run tests matching <string>
+ -g, --grep <pattern>		Only run tests matching <pattern>
+ -f, --filter <string>		Only run tests matching <string>
  --only <string>		Only run a test exactly matching <string>
  --reporters			List available reporters
  --tests			List all tests that would be run
  --debug			Print lots of output
 " . PHP_EOL;
 
-$options = getopt( 'hR:g:cC', [ 'help', 'reporter:', 'reporters', 'grep:', 'only:', 'colors', 'no-colors', 'tests', 'debug' ] );
+$options = getopt( 'hR:g:f:cC', [ 'help', 'reporter:', 'reporters', 'grep:', 'filter:', 'only:', 'colors', 'no-colors', 'tests', 'debug' ] );
 
 if ( isset( $options['help'] ) || isset( $options['h'] ) ) {
 	echo $usage;
@@ -118,6 +119,12 @@ if ( isset( $options['g'] ) ) {
 }
 if ( isset( $options['grep'] ) ) {
 	$runner->grep = $options['grep'];
+}
+if ( isset( $options['f'] ) ) {
+	$runner->filter = $options['f'];
+}
+if ( isset( $options['filter'] ) ) {
+	$runner->filter = $options['filter'];
 }
 if ( isset( $options['only'] ) ) {
 	$runner->only = $options['only'];

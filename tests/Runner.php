@@ -163,6 +163,27 @@ describe( 'Runner', function() {
 			assertTrue( $added === 3 );
 		} );
 
+		it( 'adds only tests matching "filter" if it is set', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$testSpy3 = new Spy();
+			$suite = new Suite( 'when bar', function() use ( &$suite, &$testSpy1, &$testSpy2, &$testSpy3 ) {
+				$test1 = new Test( 'filter matching', $testSpy1 );
+				$test2 = new Test( 'filter missing', $testSpy2 );
+				$test3 = new Test( 'filter another matching', $testSpy3 );
+				$suite->addTest( $test1 );
+				$suite->addTest( $test2 );
+				$suite->addTest( $test3 );
+			} );
+			$runner = new Runner();
+			$runner->filter = 'matching';
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $testSpy1->was_called() );
+			assertTrue( $testSpy3->was_called() );
+			assertTrue( ! $testSpy2->was_called() );
+		} );
+
 		it( 'adds only tests matching "grep" if it is set', function() {
 			$testSpy1 = new Spy();
 			$testSpy2 = new Spy();
@@ -176,7 +197,7 @@ describe( 'Runner', function() {
 				$suite->addTest( $test3 );
 			} );
 			$runner = new Runner();
-			$runner->grep = 'matching';
+			$runner->grep = 'match...';
 			$runner->addSuiteToCurrentSuite( $suite );
 			$runner->run();
 			assertTrue( $testSpy1->was_called() );

@@ -39,12 +39,15 @@ class Suite {
 		$this->tests[] = $test;
 	}
 
-	public function getTests( $grep = null, $only = null ) {
-		$doesTestMatch = function( $test ) use ( &$grep, &$only ) {
+	public function getTests( $grep = null, $filter = null, $only = null ) {
+		$doesTestMatch = function( $test ) use ( &$grep, &$filter, &$only ) {
 			if ( isset( $only ) && $test->getFullName() !== $only ) {
 				return false;
 			}
-			return $test->doesTestMatch( $grep );
+			if ( isset( $filter ) && ! $test->doesTestMatchString( $filter ) ) {
+				return false;
+			}
+			return $test->doesTestMatchPattern( $grep );
 		};
 		return array_filter( $this->tests, $doesTestMatch );
 	}
@@ -69,14 +72,14 @@ class Suite {
 		call_user_func( $this->callable, $this );
 	}
 
-	public function getTestCount( $grep = null, $only = null ) {
-		return count( $this->getTests( $grep, $only ) );
+	public function getTestCount( $grep = null, $filter = null, $only = null ) {
+		return count( $this->getTests( $grep, $filter, $only ) );
 	}
 
-	public function getDeepTestCount( $grep = null, $only = null ) {
-		$count = $this->getTestCount( $grep, $only );
-		$addToCount = function( $suite ) use ( &$count, &$grep, &$only ) {
-			$count += $suite->getDeepTestCount( $grep, $only );
+	public function getDeepTestCount( $grep = null, $filter = null, $only = null ) {
+		$count = $this->getTestCount( $grep, $filter, $only );
+		$addToCount = function( $suite ) use ( &$count, &$grep, &$filter, &$only ) {
+			$count += $suite->getDeepTestCount( $grep, $filter, $only );
 		};
 		array_map( $addToCount, $this->getSuites() );
 		return $count;
