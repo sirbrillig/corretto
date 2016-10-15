@@ -23,6 +23,8 @@ class Base {
 		$runner->on( 'test-failure', [ $this, 'fail' ] );
 		$runner->on( 'test-complete', [ $this, 'complete' ] );
 		$runner->on( 'tests-end', [ $this, 'epilogue' ] );
+
+		$runner->on( 'list-test', [ $this, 'listTest' ] );
 	}
 
 	protected function output( $message, $type = '' ) {
@@ -108,5 +110,9 @@ class Base {
 			$this->output( $traceLine . PHP_EOL . PHP_EOL, 'INFO' );
 			$this->output( strval( $ex ). PHP_EOL . PHP_EOL, 'INFO' );
 		}, $this->failedTests );
+	}
+
+	public function listTest( $testInfo ) {
+		$this->output( $testInfo['fullName'] . PHP_EOL );
 	}
 }

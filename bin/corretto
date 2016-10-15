@@ -22,10 +22,11 @@ Options:
  -C, --no-colors		Force disabling colorized output
  -R, --reporter <name>		Set a reporter to use (default 'spec')
  --reporters			List available reporters
+ --tests			List all tests that would be run
  --debug			Print lots of output
 " . PHP_EOL;
 
-$options = getopt( 'hR:g:cC', [ 'help', 'reporter:', 'reporters', 'grep:', 'colors', 'no-colors', 'debug' ] );
+$options = getopt( 'hR:g:cC', [ 'help', 'reporter:', 'reporters', 'grep:', 'colors', 'no-colors', 'tests', 'debug' ] );
 
 if ( isset( $options['help'] ) || isset( $options['h'] ) ) {
 	echo $usage;
@@ -134,6 +135,10 @@ switch( $reporter ) {
 		break;
 	default:
 		throw new Exception( 'Unknown reporter: ' . $reporter );
+}
+if ( isset( $options['tests'] ) ) {
+	$runner->listTests();
+	exit( 0 );
 }
 $success = $runner->run();
 if ( ! $success ) {
