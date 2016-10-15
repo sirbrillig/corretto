@@ -20,7 +20,8 @@ class Test {
 	}
 
 	public function getFullName() {
-		return $this->parent ? $this->parent->getFullName() . ' ' . $this->name : $this->name;
+		$parentName = $this->parent ? $this->parent->getFullName() : '';
+		return $parentName ? $parentName . ' ' . $this->name : $this->name;
 	}
 
 	public function getName() {
