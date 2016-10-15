@@ -1,12 +1,9 @@
 <?php
 
-use function \Corretto\describe;
-use function \Corretto\it;
-use function \Corretto\assertTrue;
-use function \Corretto\assertFalse;
-use \Corretto\Suite;
-use \Corretto\Test;
-use \Corretto\Runner;
+use function Corretto\describe, Corretto\it;
+use function Corretto\assertTrue, Corretto\assertFalse;
+use function Corretto\expect;
+use Corretto\Suite, Corretto\Test, Corretto\Runner;
 use \Spies\Spy;
 
 describe( 'Runner', function() {
@@ -729,5 +726,31 @@ describe( 'Runner', function() {
 			} ) );
 		} );
 	} );
-} );
 
+	describe( 'getTestCount()', function() {
+		it( 'returns a count of all tests added to the root suite or nested suites', function() {
+			$runner = new Runner();
+			$runner->createAndAddSuite( 'parent', function() use ( &$runner ) {
+				$runner->createAndAddTest( 'child 1', function() {} );
+				$runner->createAndAddSuite( 'child suite', function() use ( &$runner ) {
+					$runner->createAndAddTest( 'child 2', function() {} );
+					$runner->createAndAddTest( 'child 3', function() {} );
+				} );
+			} );
+			expect( $runner->getTestCount() )->toEqual( 3 );
+		} );
+
+		it( 'returns a count of all tests matching "grep"', function() {
+			$runner = new Runner();
+			$runner->grep = "child suite";
+			$runner->createAndAddSuite( 'parent', function() use ( &$runner ) {
+				$runner->createAndAddTest( 'child 1', function() {} );
+				$runner->createAndAddSuite( 'child suite', function() use ( &$runner ) {
+					$runner->createAndAddTest( 'child 2', function() {} );
+					$runner->createAndAddTest( 'child 3', function() {} );
+				} );
+			} );
+			expect( $runner->getTestCount() )->toEqual( 2 );
+		} );
+	} );
+} );

@@ -108,6 +108,10 @@ class Runner extends Emitter {
 		return ! $this->hasFailures && $this->hasOnePassingTest;
 	}
 
+	public function getTestCount() {
+		return $this->root->getDeepTestCount( $this->grep );
+	}
+
 	public function runSuite( Suite $suite ) {
 		debug( 'running suite', $suite->getFullName() );
 		if ( $suite->getDeepTestCount( $this->grep ) < 1 ) {
