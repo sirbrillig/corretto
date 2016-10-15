@@ -183,6 +183,48 @@ describe( 'Runner', function() {
 			assertTrue( $testSpy3->was_called() );
 			assertTrue( ! $testSpy2->was_called() );
 		} );
+
+		it( 'allows "grep" to include suite names', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$testSpy3 = new Spy();
+			$suite = new Suite( 'when bar', function() use ( &$suite, &$testSpy1, &$testSpy2, &$testSpy3 ) {
+				$test1 = new Test( 'grep matching', $testSpy1 );
+				$test2 = new Test( 'grep missing', $testSpy2 );
+				$test3 = new Test( 'grep another matching', $testSpy3 );
+				$suite->addTest( $test1 );
+				$suite->addTest( $test2 );
+				$suite->addTest( $test3 );
+			} );
+			$runner = new Runner();
+			$runner->grep = 'when bar';
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $testSpy1->was_called() );
+			assertTrue( $testSpy3->was_called() );
+			assertTrue( $testSpy2->was_called() );
+		} );
+
+		it( 'allows "grep" to include suite names and test names combined', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$testSpy3 = new Spy();
+			$suite = new Suite( 'when bar', function() use ( &$suite, &$testSpy1, &$testSpy2, &$testSpy3 ) {
+				$test1 = new Test( 'grep matching', $testSpy1 );
+				$test2 = new Test( 'grep missing', $testSpy2 );
+				$test3 = new Test( 'grep another matching', $testSpy3 );
+				$suite->addTest( $test1 );
+				$suite->addTest( $test2 );
+				$suite->addTest( $test3 );
+			} );
+			$runner = new Runner();
+			$runner->grep = 'when bar grep matching';
+			$runner->addSuiteToCurrentSuite( $suite );
+			$runner->run();
+			assertTrue( $testSpy1->was_called() );
+			assertTrue( ! $testSpy3->was_called() );
+			assertTrue( ! $testSpy2->was_called() );
+		} );
 	} );
 
 	describe( 'runTest()', function() {
