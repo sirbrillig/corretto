@@ -753,4 +753,30 @@ describe( 'Runner', function() {
 			expect( $runner->getTestCount() )->toEqual( 2 );
 		} );
 	} );
+
+	describe( 'listTests()', function() {
+		it( 'emits a "list-test" event for each test in each registered suite', function() {
+			$runner = new Runner();
+			$runner->createAndAddSuite( 'parent', function() use ( &$runner ) {
+				$runner->createAndAddTest( 'child 1', function() {} );
+				$runner->createAndAddSuite( 'child suite', function() use ( &$runner ) {
+					$runner->createAndAddTest( 'child 2', function() {} );
+					$runner->createAndAddTest( 'child 3', function() {} );
+				} );
+			} );
+			$eventSpy = new Spy();
+			$runner->on( 'list-test', $eventSpy );
+			$runner->listTests();
+			\Spies\expect_spy( $eventSpy )->to_have_been_called->when( function( $args ) {
+				return ( $args[0]['fullName'] === 'parent child 1' );
+			} );
+			\Spies\expect_spy( $eventSpy )->to_have_been_called->when( function( $args ) {
+				return ( $args[0]['fullName'] === 'parent child suite child 2' );
+			} );
+			\Spies\expect_spy( $eventSpy )->to_have_been_called->when( function( $args ) {
+				return ( $args[0]['fullName'] === 'parent child suite child 3' );
+			} );
+			\Spies\finish_spying();
+		} );
+	} );
 } );

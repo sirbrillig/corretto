@@ -167,4 +167,19 @@ class Runner extends Emitter {
 		$this->emit( 'test-success', $test );
 		$this->emit( 'test-complete', $test );
 	}
+
+	public function listTests() {
+		$this->listSuite( $this->root );
+	}
+
+	public function listSuite( $suite ) {
+		debug( "listing suite:", $suite->getFullName() );
+		array_map( [ $this, 'listTest' ], $suite->getTests( $this->grep ) );
+		array_map( [ $this, 'listSuite' ], $suite->getSuites() );
+	}
+
+	public function listTest( $test ) {
+		debug( "listing test:", $test->getFullName() );
+		$this->emit( 'list-test', $test->getTestInfo() );
+	}
 }

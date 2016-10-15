@@ -19,6 +19,10 @@ class Test {
 		}
 	}
 
+	public function getTestInfo() {
+		return [ 'fullName' => $this->getFullName() ];
+	}
+
 	public function getFullName() {
 		$parentName = $this->parent ? $this->parent->getFullName() : '';
 		return $parentName ? $parentName . ' ' . $this->name : $this->name;
