@@ -767,6 +767,25 @@ describe( 'Runner', function() {
 				return $args[0]->name === 'bib';
 			} ) );
 		} );
+
+		it( 'runs only a single test matching "only" if "only" is set', function() {
+			$testSpy1 = new Spy();
+			$testSpy2 = new Spy();
+			$testSpy3 = new Spy();
+			$runner = new Runner();
+			$runner->createAndAddSuite( 'parent', function() use ( &$runner, &$testSpy1, &$testSpy2, &$testSpy3 ) {
+				$runner->createAndAddTest( 'child 1', $testSpy1 );
+				$runner->createAndAddTest( 'child 2', $testSpy2 );
+				$runner->createAndAddSuite( 'another parent', function() use ( &$runner, &$testSpy3 ) {
+					$runner->createAndAddTest( 'child 1', $testSpy3 );
+				} );
+			} );
+			$runner->only = "parent child 1";
+			$runner->run();
+			assertTrue( $testSpy1->was_called() );
+			assertFalse( $testSpy2->was_called() );
+			assertFalse( $testSpy3->was_called() );
+		} );
 	} );
 
 	describe( 'getTestCount()', function() {

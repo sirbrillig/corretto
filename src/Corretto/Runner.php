@@ -8,6 +8,7 @@ class Runner extends Emitter {
 	private $hasOnePassingTest = false;
 
 	public $grep;
+	public $only;
 	public $colorEnabled = false;
 
 	public function __construct( Suite $root = null ) {
@@ -109,12 +110,12 @@ class Runner extends Emitter {
 	}
 
 	public function getTestCount() {
-		return $this->root->getDeepTestCount( $this->grep );
+		return $this->root->getDeepTestCount( $this->grep, $this->only );
 	}
 
 	public function runSuite( Suite $suite ) {
 		debug( 'running suite', $suite->getFullName() );
-		if ( $suite->getDeepTestCount( $this->grep ) < 1 ) {
+		if ( $suite->getDeepTestCount( $this->grep, $this->only ) < 1 ) {
 			debug( 'no tests in suite', $suite->getFullName() );
 			return;
 		}
@@ -122,7 +123,7 @@ class Runner extends Emitter {
 		if ( isset( $suite->before ) ) {
 			call_user_func( $suite->before, $suite->getContext() );
 		}
-		array_map( [ $this, 'runTest' ], $suite->getTests( $this->grep ) );
+		array_map( [ $this, 'runTest' ], $suite->getTests( $this->grep, $this->only ) );
 		array_map( [ $this, 'runSuite' ], $suite->getSuites() );
 		if ( isset( $suite->after ) ) {
 			call_user_func( $suite->after, $suite->getContext() );
@@ -174,7 +175,7 @@ class Runner extends Emitter {
 
 	public function listSuite( $suite ) {
 		debug( "listing suite:", $suite->getFullName() );
-		array_map( [ $this, 'listTest' ], $suite->getTests( $this->grep ) );
+		array_map( [ $this, 'listTest' ], $suite->getTests( $this->grep, $this->only ) );
 		array_map( [ $this, 'listSuite' ], $suite->getSuites() );
 	}
 
