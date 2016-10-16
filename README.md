@@ -202,6 +202,10 @@ The `corretto` command-line tool is used to execute the tests. It can be provide
 
 The tool has several output options called **Reporters** that can be changed using the `-R` or `--reporter` options. The default Reporter is `spec` but there is also `base`, which is simpler, and `dots` which is more like the default output of PHPUnit.
 
+It's possible to write a custom reporter very easily by extending `Corretto\Reporters\Base`. The Runner will emit events whenever something happens and a reporter can use those events as it likes.
+
+<img src="./examples/corretto-reporters.png">
+
 ## Examples
 
 ```php
