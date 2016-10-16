@@ -149,7 +149,9 @@ class Runner extends Emitter {
 	protected function tryTest( Test $test ) {
 		$test->callBeforeEach();
 		$test_func = call_user_func( [ $test, 'getTest' ] );
+		$this->emit( 'test-start', $test );
 		call_user_func( $test_func, $test->getContext() );
+		$this->emit( 'test-done', $test );
 		$test->callAfterEach();
 	}
 

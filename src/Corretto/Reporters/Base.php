@@ -8,6 +8,8 @@ class Base {
 	private $failedTests = [];
 	private $skippedTests = [];
 	private $testCount = 0;
+	private $testElapsed = [];
+	private $testTimers = [];
 
 	public function __construct( $runner ) {
 		$this->colorEnabled = $runner->colorEnabled;
@@ -18,6 +20,8 @@ class Base {
 		$runner->on( 'test-complete', [ $this, 'addComplete' ] );
 
 		$runner->on( 'tests-start', [ $this, 'prologue' ] );
+		$runner->on( 'test-start', [ $this, 'testStart' ] );
+		$runner->on( 'test-done', [ $this, 'testDone' ] );
 		$runner->on( 'test-success', [ $this, 'success' ] );
 		$runner->on( 'test-skip', [ $this, 'skip' ] );
 		$runner->on( 'test-failure', [ $this, 'fail' ] );
@@ -56,7 +60,9 @@ class Base {
 
 	public function success( $test ) {
 		$this->output( ' ✓ ', 'OK' );
-		$this->output( $test->getFullName() . PHP_EOL, 'INFO' );
+		$this->output( $test->getFullName(), 'INFO' );
+		$this->output( ' ' . $this->getTestTimeString( $test ), 'INFO' );
+		$this->output( PHP_EOL );
 	}
 
 	public function skip( $test ) {
@@ -84,7 +90,9 @@ class Base {
 			$this->output( "$skipCount tests skipped" . PHP_EOL, 'WARN' );
 		}
 		if ( $successCount > 0 ) {
-			$this->output( "$successCount tests passed" . PHP_EOL, 'OK' );
+			$this->output( "$successCount tests passed", 'OK' );
+			$this->output( ' ' . $this->getTotalTimeString(), 'INFO' );
+			$this->output( PHP_EOL );
 		}
 		if ( $failureCount > 0 ) {
 			$this->output( "$failureCount tests failed:" . PHP_EOL . PHP_EOL, 'FAIL' );
@@ -114,5 +122,35 @@ class Base {
 
 	public function listTest( $testInfo ) {
 		$this->output( $testInfo['fullName'] . PHP_EOL );
+	}
+
+	public function testStart( $test ) {
+		$this->testTimers[ $test->getFullName() ] = microtime( true );
+	}
+
+	public function testDone( $test ) {
+		$start = $this->testTimers[ $test->getFullName() ];
+		$end = microtime( true );
+		$this->testElapsed[ $test->getFullName() ] = $end - $start;
+	}
+
+	protected function getMsElapsed( $test ) {
+		return round( $this->testElapsed[ $test->getFullName() ] * 1000, 2 );
+	}
+
+	protected function getMsElapsedTotal() {
+		$total = 0;
+		foreach( $this->testElapsed as $testName => $secs ) {
+			$total += $secs;
+		}
+		return round( $total * 1000, 2 );
+	}
+
+	protected function getTestTimeString( $test ) {
+		return '(' . $this->getMsElapsed( $test ) . 'ms)';
+	}
+
+	protected function getTotalTimeString() {
+		return '(' . $this->getMsElapsedTotal() . 'ms)';
 	}
 }

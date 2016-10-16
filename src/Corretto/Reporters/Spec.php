@@ -26,7 +26,9 @@ class Spec extends Base {
 	public function success( $test ) {
 		$this->echoIndent();
 		$this->output( ' ✓ ', 'OK' );
-		$this->output( $test->getName() . PHP_EOL, 'INFO' );
+		$this->output( $test->getName(), 'INFO' );
+		$this->output( ' ' . $this->getTestTimeString( $test ), 'INFO' );
+		$this->output( PHP_EOL );
 	}
 
 	public function skip( $test ) {
