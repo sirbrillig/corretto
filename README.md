@@ -39,14 +39,14 @@ Just make sure your global vendor binaries directory is in your `$PATH`. See [th
 
 ## Assertions
 
-Corretto has built-in support for the following assertions:
+Corretto has built-in support for basic assertions:
 
 - `assertTrue()`
 - `assertFalse()`
 - `assertEquals()`
 - `assertNotEquals()`
 
-It also supports expect syntax:
+It also supports expect syntax, which is recommended:
 
 - `expect( $actual )->toBeTrue()`
 - `expect( $actual )->toBeFalse()`
@@ -57,9 +57,44 @@ It also supports expect syntax:
 - `expect( $actual )->toContain( $expected )`
 - `expect( $actual )->toNotContain( $expected )`
 
-Writing custom assertions is easy too. Anything that throws an `Exception` counts as a test failure!
+## Custom Assertions
+
+Writing custom assertions is easy. Any function that throws an `Exception` counts as a test failure!
 
 (You can also throw `\Corretto\AssertionFailure` which will provide slightly less noisy failures.)
+
+To add new methods to `expect()`, you can use the function `extendExpectation()` which is passed an Expectation class. An Expectation class is any class with methods that should respond to the expectation. The class should also have a constructor that accepts the actual value.
+
+Here's an example of adding `toContain()` to `expect()`:
+
+```php
+class ContainExpectation {
+	function __construct( $actual ) {
+		$this->actual = $actual;
+	}
+
+	public function toContain( $expected ) {
+		$actual = $this->actual;
+		if ( is_string( $actual ) && strpos( $actual, $expected ) === false ) {
+			$expectedString = var_export( $expected, true );
+			$actualString = var_export( $actual, true );
+			throw new \Corretto\AssertionFailure( "Failed asserting that " . $actualString . " contains " . $expectedString . "" );
+		}
+		if ( is_array( $actual ) && ! in_array( $expected, $actual ) ) {
+			$expectedString = var_export( $expected, true );
+			$actualString = var_export( $actual, true );
+			throw new \Corretto\AssertionFailure( "Failed asserting that " . $actualString . " contains " . $expectedString . "" );
+		}
+	}
+}
+```
+
+Here's an example of registering that expectation:
+
+```php
+use function \Corretto\extendExpectation;
+extendExpectation( '\Corretto\ContainExpectation' );
+```
 
 ## Tests
 
