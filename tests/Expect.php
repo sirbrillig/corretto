@@ -3,6 +3,35 @@
 use function \Corretto\describe;
 use function \Corretto\it;
 use function \Corretto\expect;
+use function \Corretto\extendExpectation;
+
+class FooExpectation {
+	public function __construct( $actual ) {
+		$this->actual = $actual;
+	}
+
+	public function toBeFoo() {
+		if ( ! $this->actual === 'foo' ) {
+			throw new \Exception( 'not foo' );
+		}
+	}
+}
+
+describe( 'extendExpectation()', function() {
+	it( 'when not used, does not add a method to expect()', function() {
+		try {
+			expect( 'foo' )->toBeFoo();
+		} catch ( Exception $e ) {
+			return;
+		}
+		throw new Exception( 'calling an undefined method on expect() did not fail' );
+	} );
+
+	it( 'adds methods on the passed class to the object returned by expect()', function() {
+		extendExpectation( 'FooExpectation' );
+		expect( 'foo' )->toBeFoo();
+	} );
+} );
 
 describe( 'expect()', function() {
 	describe( 'toBeTrue()', function() {
