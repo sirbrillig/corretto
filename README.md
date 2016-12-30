@@ -39,14 +39,14 @@ Just make sure your global vendor binaries directory is in your `$PATH`. See [th
 
 ## Assertions
 
-Corretto has built-in support for the following assertions:
+Corretto has built-in support for basic assertions:
 
 - `assertTrue()`
 - `assertFalse()`
 - `assertEquals()`
 - `assertNotEquals()`
 
-It also supports expect syntax:
+It also supports expect syntax, which is recommended:
 
 - `expect( $actual )->toBeTrue()`
 - `expect( $actual )->toBeFalse()`
@@ -57,9 +57,35 @@ It also supports expect syntax:
 - `expect( $actual )->toContain( $expected )`
 - `expect( $actual )->toNotContain( $expected )`
 
-Writing custom assertions is easy too. Anything that throws an `Exception` counts as a test failure!
+## Custom Assertions
+
+Writing custom assertions is easy. Any function that throws an `Exception` counts as a test failure!
 
 (You can also throw `\Corretto\AssertionFailure` which will provide slightly less noisy failures.)
+
+To add new methods to `expect()`, you'll need to create a class that extends `Corretto\Expectation`. Within the class, add methods that test the value of `$this->actual`, which is the value passed to `expect()`. Then pass the class to the function `Corretto\extendExpectation()`.
+
+For example, to add the method `toBeFoo()`, you would write the following:
+
+```php
+class FooExpectation extends Corretto\Expectation {
+	public function toBeFoo() {
+		if ( ! $this->actual === 'foo' ) {
+			throw new \Exception( 'not foo' );
+		}
+	}
+}
+Corretto\extendExpectation( 'FooExpectation' );
+```
+
+It is then possible to use this method in your tests, like this:
+
+```php
+test( 'string is "foo"', function() {
+	$string = 'foo';
+	expect( $string )->toBeFoo();
+} );
+```
 
 ## Tests
 
