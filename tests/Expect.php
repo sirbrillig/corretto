@@ -5,11 +5,7 @@ use function \Corretto\it;
 use function \Corretto\expect;
 use function \Corretto\extendExpectation;
 
-class FooExpectation {
-	public function __construct( $actual ) {
-		$this->actual = $actual;
-	}
-
+class FooExpectation extends Corretto\Expectation {
 	public function toBeFoo() {
 		if ( ! $this->actual === 'foo' ) {
 			throw new \Exception( 'not foo' );

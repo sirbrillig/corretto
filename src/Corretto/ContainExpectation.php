@@ -1,11 +1,7 @@
 <?php
 namespace Corretto;
 
-class ContainExpectation {
-	function __construct( $actual ) {
-		$this->actual = $actual;
-	}
-
+class ContainExpectation extends Expectation {
 	public function toContain( $expected ) {
 		$actual = $this->actual;
 		if ( is_string( $actual ) && strpos( $actual, $expected ) === false ) {

@@ -63,37 +63,28 @@ Writing custom assertions is easy. Any function that throws an `Exception` count
 
 (You can also throw `\Corretto\AssertionFailure` which will provide slightly less noisy failures.)
 
-To add new methods to `expect()`, you can use the function `extendExpectation()` which is passed an Expectation class. An Expectation class is any class with methods that should respond to the expectation. The class should also have a constructor that accepts the actual value.
+To add new methods to `expect()`, you'll need to create a class that extends `Corretto\Expectation`. Within the class, add methods that test the value of `$this->actual`, which is the value passed to `expect()`. Then pass the class to the function `Corretto\extendExpectation()`.
 
-Here's an example of adding `toContain()` to `expect()`:
+For example, to add the method `toBeFoo()`, you would write the following:
 
 ```php
-class ContainExpectation {
-	function __construct( $actual ) {
-		$this->actual = $actual;
-	}
-
-	public function toContain( $expected ) {
-		$actual = $this->actual;
-		if ( is_string( $actual ) && strpos( $actual, $expected ) === false ) {
-			$expectedString = var_export( $expected, true );
-			$actualString = var_export( $actual, true );
-			throw new \Corretto\AssertionFailure( "Failed asserting that " . $actualString . " contains " . $expectedString . "" );
-		}
-		if ( is_array( $actual ) && ! in_array( $expected, $actual ) ) {
-			$expectedString = var_export( $expected, true );
-			$actualString = var_export( $actual, true );
-			throw new \Corretto\AssertionFailure( "Failed asserting that " . $actualString . " contains " . $expectedString . "" );
+class FooExpectation extends Corretto\Expectation {
+	public function toBeFoo() {
+		if ( ! $this->actual === 'foo' ) {
+			throw new \Exception( 'not foo' );
 		}
 	}
 }
+Corretto\extendExpectation( 'FooExpectation' );
 ```
 
-Here's an example of registering that expectation:
+It is then possible to use this method in your tests, like this:
 
 ```php
-use function \Corretto\extendExpectation;
-extendExpectation( '\Corretto\ContainExpectation' );
+test( 'string is "foo"', function() {
+	$string = 'foo';
+	expect( $string )->toBeFoo();
+} );
 ```
 
 ## Tests
