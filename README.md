@@ -6,15 +6,15 @@ Modeled after [mocha](https://mochajs.org/), Corretto provides a DSL (domain-spe
 
 ```php
 <?php
-use function Corretto\describe, Corretto\it, Corretto\assertTrue, Corretto\assertFalse;
+use function Corretto\describe, Corretto\it, Corretto\expect;
 
 describe( 'isFive()', function() {
 	it( 'returns true if its argument is five', function() {
-		assertTrue( isFive( 5 ) );
+		expect( isFive( 5 ) )->toBeTrue();
 	} );
 
 	it( 'returns false if its argument is not five', function() {
-		assertFalse( isFive( 6 ) );
+		expect( isFive( 6 ) )->toBeFalse();
 	} );
 } );
 ```
@@ -127,7 +127,7 @@ describe( 'some tests to run', function() {
 
 There is a default "root" suite always defined, so tests can exist by themselves.
 
-Suites can be nested as deep as makes sense.
+Suites can be nested as deep as you like.
 
 ```php
 describe( 'MyObject', function() {
@@ -159,7 +159,7 @@ describe( 'SKIP', 'some tests not to run', function() {
 
 ## Before, After
 
-Suites can each have a `before( callable $callable )` which will be called before all the tests are run in that suite. Similarly `after( callable $callable )` will be run after all the tests have complete.
+Suites can each have a `before( callable $callable )` which will be called before all the tests are run in that suite. Similarly `after( callable $callable )` will be run after all the tests have completed.
 
 There is also `beforeEach( callable $callable )` and `afterEach( callable $callable )` which run their callables before/after each test in the suite (or any nested suite). These can be used to set up and restore data that is shared between each test.
 
